@@ -129,15 +129,28 @@ h1, h2, h3, h4, p { margin: 0; }
 .header:not(.is-solid) .logo small { color: rgba(255,255,255,.75); }
 .header:not(.is-solid) .btn { background: #fff; color: var(--ink); border-color: #fff; }
 .hero__copy .btn { margin-top: 28px; }
-.fog { position: absolute; left: -20%; right: -20%; bottom: -25%; height: 85%; z-index: 4; pointer-events: none; will-change: transform, opacity; }
-.fog span { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,255,255,1), rgba(255,255,255,.85) 45%, rgba(255,255,255,0)); filter: blur(18px); }
-.fog span:nth-child(1) { width: 60%; height: 70%; left: -4%; bottom: 0; }
-.fog span:nth-child(2) { width: 55%; height: 80%; left: 30%; bottom: -10%; }
-.fog span:nth-child(3) { width: 58%; height: 70%; right: -6%; bottom: 2%; }
-.fog span:nth-child(4) { width: 40%; height: 50%; left: 18%; bottom: 30%; opacity: .8; }
-.fog span:nth-child(5) { width: 40%; height: 50%; right: 14%; bottom: 34%; opacity: .75; }
-.fog span:nth-child(6) { width: 120%; height: 60%; left: -10%; bottom: -20%; }
-.fog--warm span:nth-child(1) { background: radial-gradient(closest-side, rgba(255,226,206,.9), rgba(255,236,224,.5) 50%, rgba(255,255,255,0)); }
+/* Clouds: three depth layers. Each starts as a low band and rises on scroll (Hero.tsx);
+   the puffs inside drift and breathe on their own so the sky never sits still. */
+.clouds { position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0; will-change: transform, opacity; }
+.fog { position: absolute; left: -25%; right: -25%; bottom: -60%; height: 90%; pointer-events: none; will-change: transform, opacity; }
+.fog span { position: absolute; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,255,255,1), rgba(255,255,255,.82) 45%, rgba(255,255,255,0)); filter: blur(18px); animation: cloudDrift 32s ease-in-out infinite alternate; will-change: transform; }
+.fog span:nth-child(1) { width: 60%; height: 70%; left: -4%; bottom: 0; animation-duration: 38s; }
+.fog span:nth-child(2) { width: 55%; height: 80%; left: 30%; bottom: -10%; animation-duration: 29s; animation-direction: alternate-reverse; }
+.fog span:nth-child(3) { width: 58%; height: 70%; right: -6%; bottom: 2%; animation-duration: 34s; animation-delay: -9s; }
+.fog span:nth-child(4) { width: 40%; height: 50%; left: 16%; bottom: 34%; opacity: .85; animation-duration: 26s; animation-delay: -4s; }
+.fog span:nth-child(5) { width: 40%; height: 50%; right: 12%; bottom: 38%; opacity: .8; animation-duration: 31s; animation-direction: alternate-reverse; animation-delay: -12s; }
+.fog span:nth-child(6) { width: 120%; height: 60%; left: -10%; bottom: -22%; animation-duration: 44s; }
+.fog--back { bottom: -48%; opacity: .75; }
+.fog--back span { filter: blur(30px); animation-duration: 52s; }
+.fog--back span:nth-child(1) { background: radial-gradient(closest-side, rgba(255,226,206,.85), rgba(255,236,224,.45) 50%, rgba(255,255,255,0)); }
+.fog--mid span:nth-child(3) { background: radial-gradient(closest-side, rgba(235,242,252,1), rgba(240,245,252,.75) 50%, rgba(255,255,255,0)); }
+.fog--front { bottom: -70%; }
+.fog--front span { filter: blur(12px); }
+@keyframes cloudDrift {
+  0%   { transform: translate3d(-7%, 0, 0) scale(1); }
+  50%  { transform: translate3d(2%, -4%, 0) scale(1.06); }
+  100% { transform: translate3d(8%, 1%, 0) scale(1.1); }
+}
 /* White layer with black type, screen-blended: the letters become windows onto the video below. */
 .hero__brand { position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; opacity: 0; background: #fff; mix-blend-mode: screen; overflow: hidden; }
 .hero__mask {
@@ -146,7 +159,8 @@ h1, h2, h3, h4, p { margin: 0; }
   will-change: transform;
 }
 .hero__mask-sub { margin-top: .1em; font-size: clamp(30px, 6vw, 96px); font-weight: 500; letter-spacing: -.04em; color: #c9ced3; will-change: opacity, transform; }
-.hero__scroll { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 7; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.5); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.hero__scroll { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 7; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.5); opacity: 0; }
+.hero__scroll .hint-in { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .hero__scroll i { width: 1px; height: 38px; background: linear-gradient(#fff, transparent); animation: drip 1.8s var(--ease) infinite; transform-origin: top; }
 @keyframes drip { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); opacity: 1; } 100% { opacity: 0; } }
 
@@ -402,3 +416,12 @@ h1, h2, h3, h4, p { margin: 0; }
 /* next/image "fill" sets inline inset/size; give the outro photo parallax headroom */
 .outro img { inset: -10% 0 auto 0 !important; height: 120% !important; }
 .hero__media .hero__vid { position: absolute; inset: 0; transition: opacity .9s linear; }
+
+/* Hero load-in start states (animated in by Hero.tsx) */
+.hero__media-in { position: absolute; inset: 0; will-change: transform; }
+.hero__copy-in { will-change: transform, opacity, filter; }
+.hero__title .wd { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .03em .12em; margin-bottom: -.12em; }
+.hero__title .wd + .wd { margin-left: .2em; }
+.hero__title .wd > span { display: inline-block; transform: translateY(108%); opacity: 0; filter: blur(10px); will-change: transform, opacity, filter; }
+.hero__sub, .hero__copy .btn { opacity: 0; transform: translateY(26px); }
+.hero__mask .lt { display: inline-block; will-change: transform, opacity; }

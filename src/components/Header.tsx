@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { nav } from "@/lib/site";
 import { Arrow, Chevron } from "./icons";
+import { scrollToTop } from "./SmoothScroll";
 
 export default function Header() {
   const pathname = usePathname();
@@ -41,7 +42,15 @@ export default function Header() {
     <>
       <header className={"header" + (solid ? " is-solid" : "")}>
         <div className="wrap">
-          <Link className="logo" href="/" aria-label="Serene Heights Lahore home">
+          <Link
+            className="logo"
+            href="/"
+            aria-label="Serene Heights Lahore home"
+            onClick={(e) => {
+              // Already home: glide back to the top instead of reloading the route.
+              if (isHome) { e.preventDefault(); scrollToTop(); }
+            }}
+          >
             <span>SERENE HEIGHTS<small>LAHORE</small></span>
           </Link>
           <nav className="nav" aria-label="Main">

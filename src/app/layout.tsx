@@ -3,6 +3,7 @@ import { Instrument_Sans, Lora } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollFx from "@/components/ScrollFx";
+import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
 const sans = Instrument_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <Footer />
         <ScrollFx />
+        <SmoothScroll />
       </body>
     </html>
   );
