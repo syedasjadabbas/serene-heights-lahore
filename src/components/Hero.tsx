@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Btn from "./Btn";
-import HeroVideo from "./HeroVideo";
+import HeroVideo, { type HeroVideoHandle } from "./HeroVideo";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -16,12 +16,37 @@ const smooth = (t: number) => t * t * (3 - 2 * t);
 const TITLE = "A New Standard of Urban Living";
 const BRAND = ["S", "E", "R", "E", "N", "E"];
 const ZOOM_LETTER = 3; // second "E": the zoom flies through its stem
+// The tower sits at ~60% across / ~42% down the video and is ~38% of its width;
+// at this scale it spans the whole "SERENE" word even as the camera drifts.
+const TOWER_ORIGIN = "60% 42%";
+const TOWER_SCALE = 2.3;
+const HOLD_AT = 0.535; // timeline point where every letter has landed
+const SCRUB_AT = 0.8; // timeline point where the video starts following the scroll
+// How much scrolling (relative units, ~vh on desktop) each stretch of the timeline gets.
+// The flat stretch is the pause on the finished "SERENE" screen.
+const STOPS: [number, number][] = [
+  [0, 0],          // intro copy away, clouds rise, letters rise
+  [230, HOLD_AT],  // every letter landed
+  [350, HOLD_AT],  // ...hold still
+  [560, SCRUB_AT], // slow zoom through the letters and dissolve
+  [820, 1],        // video follows the scroll, captions appear
+];
+const timeline = (q: number) => {
+  const d = q * STOPS[STOPS.length - 1][0];
+  for (let i = 1; i < STOPS.length; i++) {
+    const [d0, t0] = STOPS[i - 1], [d1, t1] = STOPS[i];
+    if (d <= d1) return t0 + (t1 - t0) * ((d - d0) / (d1 - d0));
+  }
+  return 1;
+};
+
+const CAPTIONS = ["21 storeys of commercial address.", "On Gulberg Main Boulevard.", "Minutes from Lahore's CBD."];
 
 // Three depth layers of cloud: back (slow, faint) -> front (fast, dense).
 const CLOUD_LAYERS = ["back", "mid", "front"] as const;
 const Cloud = ({ depth }: { depth: (typeof CLOUD_LAYERS)[number] }) => (
   <div className={`fog fog--${depth}`}>
-    <span /><span /><span /><span /><span /><span />
+    <span />
   </div>
 );
 
@@ -29,10 +54,12 @@ const Cloud = ({ depth }: { depth: (typeof CLOUD_LAYERS)[number] }) => (
  * Pinned hero.
  * On load: video settles from a slow zoom, the headline rises word by word, clouds drift.
  * On scroll: headline floats away -> clouds rise in layers and swallow the tower ->
- * "SERENE" letters rise with the video showing through them -> the letters zoom until the video fills the screen.
+ * "SERENE" letters rise with the video showing through them -> pause -> the letters slowly zoom until the
+ * video fills the screen -> the footage follows the scroll while captions rise in.
  */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
+  const video = useRef<HeroVideoHandle>(null);
 
   useGSAP(() => {
     const el = root.current!;
@@ -42,6 +69,9 @@ export default function Hero() {
     const sky = q(".hero__sky"), clouds = q(".clouds"), hint = q(".hero__scroll");
     const words = qa(".hero__title .wd > span");
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Fetch the scroll-driven stills once the page has settled, well before they're needed.
+    const idleTimer = window.setTimeout(() => video.current?.preload(), 1500);
 
     /* ---------- Load-in ---------- */
     const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
@@ -68,8 +98,9 @@ export default function Hero() {
         vx(nx * -22); vy(ny * -14); cx(nx * 40); tx(nx * 10);
       };
       window.addEventListener("pointermove", onMove);
-      return () => window.removeEventListener("pointermove", onMove);
+      return () => { clearTimeout(idleTimer); window.removeEventListener("pointermove", onMove); };
     }
+    return () => clearTimeout(idleTimer);
   }, { scope: root });
 
   useGSAP(() => {
@@ -79,7 +110,8 @@ export default function Hero() {
     const media = q(".hero__media"), copyIn = q(".hero__copy-in"), sky = q(".hero__sky");
     const brand = q(".hero__brand"), mask = q(".hero__mask"), sub = q(".hero__mask-sub");
     const hint = q(".hero__scroll .hint-in");
-    const fogs = qa(".fog"), letters = qa(".hero__mask .lt");
+    const fogs = qa(".fog"), letters = qa(".hero__mask .lt"), clouds = q(".clouds");
+    const caps = qa(".hero__captions p"), shade = q(".hero__shade");
     const target = letters[ZOOM_LETTER];
 
     const setOrigin = () => {
@@ -90,12 +122,12 @@ export default function Hero() {
       mask.style.transformOrigin = `${r.left - m.left + r.width * 0.2}px ${r.top - m.top + r.height * 0.5}px`;
     };
 
+    let scrubbing = false;
     const render = (p: number) => {
-      // 1. Headline floats up and softens away; video pushes in.
+      // 1. Headline floats up and fades away; video pushes in.
       const out = seg(p, 0, 0.22);
       copyIn.style.transform = `translateY(${-smooth(out) * 180}px) scale(${1 - out * 0.06})`;
       copyIn.style.opacity = String(1 - seg(p, 0.04, 0.2));
-      copyIn.style.filter = `blur(${seg(p, 0.06, 0.22) * 10}px)`;
       hint.style.opacity = String(1 - seg(p, 0, 0.04));
       // 2. Clouds rise in depth layers: the front layer moves fastest.
       fogs.forEach((f, i) => {
@@ -105,30 +137,55 @@ export default function Hero() {
         // Fade out under the white layer, so the letters show the video and not the clouds.
         f.style.opacity = String(1 - seg(p, 0.32, 0.4));
       });
+      // Stop the drift animation once the clouds are gone.
+      clouds.classList.toggle("is-idle", p > 0.4);
+      clouds.style.visibility = p > 0.41 ? "hidden" : "visible";
       sky.style.transform = `translateY(${-seg(p, 0, 0.3) * 8}%)`;
       // 3. White layer fades in; letters rise one by one with the video showing through.
-      brand.style.opacity = String(seg(p, 0.26, 0.38) * (1 - seg(p, 0.8, 0.9)));
+      const bo = seg(p, 0.26, 0.38) * (1 - smooth(seg(p, 0.64, 0.79)));
+      brand.style.opacity = String(bo);
+      // Kept on its own layer and never hidden, so its huge type is drawn once up front
+      // rather than the moment it first appears (that cost a ~150 ms frame on laptop graphics).
       letters.forEach((l, i) => {
         const k = smooth(seg(p, 0.28 + i * 0.022, 0.42 + i * 0.022));
         l.style.transform = `translateY(${(1 - k) * 70}%)`;
         l.style.opacity = String(0.15 + k * 0.85);
       });
-      sub.style.opacity = String(seg(p, 0.4, 0.46) * (1 - seg(p, 0.5, 0.58)));
-      sub.style.transform = `translateY(${(1 - seg(p, 0.4, 0.48)) * 30 + seg(p, 0.5, 0.6) * 60}px)`;
-      // 4. Zoom through the letters until the video fills the screen.
-      const ze = smooth(seg(p, 0.52, 0.86));
-      mask.style.transform = `scale(${(0.82 + seg(p, 0.3, 0.5) * 0.18) * Math.pow(70, ze)})`;
-      media.style.transform = `scale(${1 + seg(p, 0, 0.5) * 0.15 + ze * 0.25 - seg(p, 0.86, 1) * 0.12})`;
+      sub.style.opacity = String(seg(p, 0.4, 0.46) * (1 - seg(p, HOLD_AT, 0.62)));
+      sub.style.transform = `translateY(${(1 - seg(p, 0.4, 0.48)) * 30 + seg(p, HOLD_AT, 0.66) * 60}px)`;
+      // 4. Slow zoom through the letters while the white dissolves, until the video fills the screen.
+      const ze = smooth(seg(p, HOLD_AT, 0.75));
+      mask.style.transform = `scale(${(0.82 + seg(p, 0.3, 0.5) * 0.18) * Math.pow(28, ze)})`;
+      // While the clouds cover it, the video pushes in on the tower so every letter sits over
+      // the lit building rather than the sky; it keeps pushing through the zoom, then eases back.
+      const frame = smooth(seg(p, 0.18, 0.36));
+      const base = 1 + seg(p, 0, 0.18) * 0.12;
+      const settle = smooth(seg(p, 0.7, SCRUB_AT));
+      media.style.transform = `scale(${base + (TOWER_SCALE - base) * frame + ze * 0.3 - settle * (TOWER_SCALE + 0.3 - 1.08)})`;
+      // 5. Full screen: the footage follows the scroll and captions rise in.
+      const s = seg(p, SCRUB_AT, 1);
+      // Behind the letters the video just plays (cheap native decoding); only once it's full
+      // screen does it follow the scroll. Small hysteresis so jitter at the boundary can't flip modes.
+      if (p > 0.15) video.current?.preload(); // fallback if the idle preload hasn't started yet
+      if (p >= SCRUB_AT) { scrubbing = true; video.current?.follow(s); }
+      else if (scrubbing && p < SCRUB_AT - 0.01) { scrubbing = false; video.current?.follow(null); }
+      shade.style.opacity = String(smooth(seg(s, 0, 0.2)));
+      caps.forEach((c, i) => {
+        const k = smooth(seg(s, 0.08 + i * 0.2, 0.3 + i * 0.2));
+        c.style.opacity = String(k);
+        c.style.transform = `translateY(${(1 - k) * 40}px)`;
+      });
     };
 
+    media.style.transformOrigin = TOWER_ORIGIN;
     setOrigin();
     render(0);
     const state = { p: 0 };
     gsap.to(state, {
       p: 1,
       ease: "none",
-      onUpdate: () => render(state.p),
-      scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: 0.4, onRefresh: setOrigin },
+      onUpdate: () => render(timeline(state.p)),
+      scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: true, onRefresh: setOrigin },
     });
     document.fonts?.ready.then(() => { setOrigin(); ScrollTrigger.refresh(); });
   }, { scope: root });
@@ -137,7 +194,7 @@ export default function Hero() {
     <section className="hero" aria-label="Introduction" ref={root}>
       <div className="hero__stage">
         <div className="hero__media">
-          <div className="hero__media-in"><HeroVideo /></div>
+          <div className="hero__media-in"><HeroVideo ref={video} /></div>
         </div>
         <div className="hero__sky" />
         <div className="hero__copy">
@@ -153,6 +210,10 @@ export default function Hero() {
         </div>
         <div className="clouds">
           {CLOUD_LAYERS.map((d) => <Cloud key={d} depth={d} />)}
+        </div>
+        <div className="hero__shade" />
+        <div className="hero__captions">
+          {CAPTIONS.map((c) => <p key={c}>{c}</p>)}
         </div>
         <div className="hero__brand" aria-hidden="true">
           <div className="hero__mask">

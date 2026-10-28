@@ -41,12 +41,12 @@ export default function DevSlider() {
       <div className="wrap">
         <Reveal className="huge" text="Built by Names You Trust." />
         <div className="devs__grid">
-          <div className="devs__img">
+          <div className="reveal-img"><div className="devs__img">
             {devs.map((d, k) => (
               <Image key={d.img} src={d.img} alt={d.name} fill sizes="(max-width: 760px) 100vw, 58vw" className={k === i ? "on" : ""} />
             ))}
-          </div>
-          <div className="devs__panel">
+          </div></div>
+          <div className="devs__panel" data-stagger>
             <div className="devs__top">
               <div className="dots">
                 {devs.map((d, k) => (
@@ -55,6 +55,7 @@ export default function DevSlider() {
               </div>
               <span className="quote-mark">”</span>
             </div>
+            <div className="devs__progress"><span key={`${i}-${tick}`} /></div>
             <div className="devs__q">
               {devs.map((d, k) => (
                 <div key={d.name} className={k === i ? "on" : ""}>

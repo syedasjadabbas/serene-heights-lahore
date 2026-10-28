@@ -78,10 +78,12 @@ export default function ProjectPage() {
               <p className="lead" style={{ marginTop: 24, color: "#a9adad" }}>Designed as a mixed-use vertical development, the building includes Lower Ground + 6 commercial floors, 5 parking floors, 7 office floors, 2 co-working floors and 2 hotel apartment floors.</p>
             </div>
           </div>
-          <div className="stats">
+          <div className="stats" data-stagger>
             {stats.map(([n, l]) => <div className="stat" key={l}><b>{n}</b><span>{l}</span></div>)}
           </div>
-          <Image src="/assets/project/Image2.jpg" alt="Exploded view of the building's floor configuration" width={1512} height={851} sizes="100vw" style={{ marginTop: 60, width: "100%", height: "auto", background: "#fff" }} />
+          <div className="reveal-img" style={{ marginTop: 60 }}>
+            <Image src="/assets/project/Image2.jpg" alt="Exploded view of the building's floor configuration" width={1512} height={851} sizes="100vw" style={{ width: "100%", height: "auto", background: "#fff" }} />
+          </div>
         </div>
       </section>
 
@@ -89,7 +91,7 @@ export default function ProjectPage() {
         <div className="wrap">
           {floors.map((f) => (
             <article className="floor" id={f.id} key={f.id}>
-              <div className="floor__media">
+              <div className="floor__media reveal-img">
                 <Image src={f.img} alt={`${f.title} ${f.word ?? "floors"}`} fill sizes="(max-width: 760px) 100vw, 50vw" />
                 {f.plan && (
                   <div className="floor__plan">
@@ -97,7 +99,7 @@ export default function ProjectPage() {
                   </div>
                 )}
               </div>
-              <div>
+              <div data-stagger>
                 <div className="floor__tag">{f.tag}</div>
                 <h2>{f.title} <em>{f.word ?? "Floors"}</em></h2>
                 {f.body.map((t) => <p key={t.slice(0, 20)}>{t}</p>)}
@@ -117,7 +119,9 @@ export default function ProjectPage() {
               <p className="lead" style={{ marginTop: 24, color: "#5f6464" }}>Strategically located on Gulberg Main Boulevard, this 21-storey commercial high-rise sits within walking distance of Lahore&apos;s Central Business District, placing it at the centre of the city&apos;s most active commercial zone.</p>
             </div>
           </div>
-          <Image src="/assets/home/building-3.jpg" alt="Location map: Model Town, Kalma Underpass, CBD and Main Boulevard" width={1432} height={867} sizes="100vw" style={{ marginTop: 60, width: "100%", height: "auto" }} />
+          <div className="reveal-img" style={{ marginTop: 60 }}>
+            <Image src="/assets/home/building-3.jpg" alt="Location map: Model Town, Kalma Underpass, CBD and Main Boulevard" width={1432} height={867} sizes="100vw" style={{ width: "100%", height: "auto" }} />
+          </div>
         </div>
       </section>
 

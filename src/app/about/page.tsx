@@ -53,14 +53,14 @@ export default function AboutPage() {
           </div>
           {partners.map((p, i) => (
             <div key={p.name} style={i ? { marginTop: 60 } : undefined}>
-              <div className="partner">
+              <div className="partner" data-stagger>
                 <Image src={p.logo.src} alt={`${p.name} logo`} width={p.logo.w} height={p.logo.h} sizes="120px" style={{ width: "auto" }} />
                 <div><h3>{p.name}</h3><p>{p.text}</p></div>
               </div>
               <div className="about-blocks">
                 <div className="ab">
-                  <div className="ab__a"><Image src={p.a.src} alt={p.name} width={p.a.w} height={p.a.h} sizes="(max-width: 760px) 100vw, 36vw" /></div>
-                  <div><Image src={p.b.src} alt={`${p.name} project`} width={p.b.w} height={p.b.h} sizes="(max-width: 760px) 100vw, 64vw" /></div>
+                  <div className="ab__a reveal-img"><Image src={p.a.src} alt={p.name} width={p.a.w} height={p.a.h} sizes="(max-width: 760px) 100vw, 36vw" /></div>
+                  <div className="reveal-img" style={{ ["--d" as string]: ".15s" }}><Image src={p.b.src} alt={`${p.name} project`} width={p.b.w} height={p.b.h} sizes="(max-width: 760px) 100vw, 64vw" /></div>
                 </div>
               </div>
             </div>

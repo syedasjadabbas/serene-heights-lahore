@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 };
 
 const chevrons = [
-  "/assets/amenities/amenities-1-new.jpg",
-  "/assets/home/building-brand.jpg",
-  "/assets/project/Image11.jpg",
-  "/assets/home/building-8-new.jpg",
+  "/assets/chev/am1.webp",
+  "/assets/chev/brand.webp",
+  "/assets/chev/p11.webp",
+  "/assets/chev/b8.webp",
 ];
 
 const groups = [
@@ -67,7 +67,7 @@ export default function AmenitiesPage() {
               <p className="lead" style={{ marginTop: 24, color: "#a9adad" }}>Designed to support modern business, hospitality and lifestyle needs, the project offers a comprehensive range of professionally managed facilities — ensuring comfort, efficiency and long-term value.</p>
             </div>
           </div>
-          <div className="amen">
+          <div className="amen" data-stagger>
             {groups.map((g) => (
               <div className="amen__item" key={g.title}>
                 <Image src={`/assets/amenities/${g.icon}.png`} alt="" width={48} height={48} />
@@ -76,7 +76,7 @@ export default function AmenitiesPage() {
               </div>
             ))}
           </div>
-          <div className="assure">
+          <div className="assure" data-stagger>
             <h3 style={{ fontSize: 24, fontWeight: 500, letterSpacing: "-.02em" }}>Management Assurance</h3>
             <p>All services and facilities will be managed exclusively by in-house management, ensuring consistent standards, accountability and operational control. No unions or third-party operators are involved in day-to-day management.</p>
           </div>

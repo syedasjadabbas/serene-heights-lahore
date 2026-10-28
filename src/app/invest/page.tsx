@@ -39,7 +39,7 @@ export default function InvestPage() {
             <div className="label">Why Invest</div>
             <Reveal className="huge" text={"Seven Reasons.\nOne Address."} />
           </div>
-          <div className="reasons">
+          <div className="reasons" data-stagger>
             {reasons.map((r, i) => (
               <div className="reason" id={r.id} key={r.title}>
                 <span className="reason__n">{String(i + 1).padStart(2, "0")}</span>

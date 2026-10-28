@@ -22,7 +22,7 @@ export default function ContactPage() {
 
       <section className="sec" style={{ paddingTop: 20 }}>
         <div className="wrap contact">
-          <div className="c-list">
+          <div className="c-list" data-stagger>
             {groups.flatMap((g) =>
               g.numbers.map((n) => (
                 <a key={n} href={tel(n)}><small>{g.label}</small><b>{n}</b></a>
@@ -34,13 +34,16 @@ export default function ContactPage() {
           <ContactForm />
         </div>
         <div className="wrap">
+          <div className="reveal-img" style={{ marginTop: 70 }}>
           <iframe
             className="map"
+            style={{ marginTop: 0, display: "block" }}
             title="Map of Gulberg Main Boulevard, Lahore"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             src="https://www.google.com/maps?q=Main+Boulevard+Gulberg,+Lahore&output=embed"
           />
+          </div>
         </div>
       </section>
 

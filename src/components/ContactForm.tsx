@@ -34,7 +34,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form className="form" onSubmit={onSubmit}>
+    <form className="form" onSubmit={onSubmit} data-stagger>
       <div className="field"><label htmlFor="f-name">Full name</label><input id="f-name" name="name" required /></div>
       <div className="field"><label htmlFor="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" required minLength={7} /></div>
       <div className="field full"><label htmlFor="f-email">Email</label><input id="f-email" name="email" type="email" /></div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { site, tel } from "@/lib/site";
 import { Arrow } from "./icons";
+import { scrollToTop } from "./SmoothScroll";
 
 export default function Footer() {
   const [msg, setMsg] = useState("");
@@ -67,9 +68,14 @@ export default function Footer() {
             <a href={`mailto:${site.email}`}>Email</a>
           </div>
         </div>
-        <div className="footer__mark">
-          <span>SERENE</span>
-          <Image src="/assets/logo/serene-white-transp.png" alt="Serene Heights Lahore logo" width={1944} height={2147} sizes="130px" />
+        <div className="footer__mark" data-in>
+          <div className="wm" aria-hidden="true">
+            {"SERENE".split("").map((c, i) => <span key={i} style={{ ["--i" as string]: i }}>{c}</span>)}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 22 }}>
+            <Image src="/assets/logo/serene-white-transp.png" alt="Serene Heights Lahore logo" width={1944} height={2147} sizes="130px" />
+            <button className="to-top" onClick={() => scrollToTop()}>Back to top <Arrow /></button>
+          </div>
         </div>
         <div className="footer__legal">
           <span>Corporate Office / Commercial: {site.phones.commercial.numbers.join(" · ")}</span>

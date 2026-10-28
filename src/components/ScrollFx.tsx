@@ -20,8 +20,11 @@ export default function ScrollFx() {
         const units = el.querySelectorAll<HTMLElement>(".ch, .w");
         const start = Number(el.dataset.start ?? 0.9);
         const end = Number(el.dataset.end ?? 0.45);
+        let shown = -1;
         const paint = (self: ScrollTrigger) => {
           const n = Math.round(self.progress * units.length);
+          if (n === shown) return;
+          shown = n;
           units.forEach((u, i) => u.classList.toggle("on", i < n));
         };
         // Text already past its start (e.g. page titles) is painted straight away.
@@ -34,8 +37,21 @@ export default function ScrollFx() {
         }));
       });
 
-      gsap.utils.toArray<HTMLElement>(".fade-up").forEach((el) => {
+      // One-shot entrances: CSS does the motion once .in is added (see "Scroll motion" in globals.css).
+      gsap.utils.toArray<HTMLElement>("[data-stagger]").forEach((el) =>
+        Array.from(el.children).forEach((c, i) => (c as HTMLElement).style.setProperty("--i", String(i)))
+      );
+      gsap.utils.toArray<HTMLElement>(".fade-up, .reveal-img, [data-stagger], [data-in], .label, .draw").forEach((el) => {
+        if (el.matches("[data-stagger] > .draw")) return; // drawn with its list
         ScrollTrigger.create({ trigger: el, start: "top 88%", once: true, onEnter: () => el.classList.add("in") });
+      });
+
+      // Closing photos settle from a slow zoom as they scroll into view.
+      gsap.utils.toArray<HTMLElement>(".outro > img").forEach((img) => {
+        gsap.fromTo(img, { scale: 1.22 }, {
+          scale: 1, ease: "none",
+          scrollTrigger: { trigger: img.parentElement, start: "top bottom", end: "top top", scrub: true },
+        });
       });
 
       gsap.utils.toArray<HTMLElement>(".arrows__row").forEach((row) => {

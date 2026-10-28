@@ -31,7 +31,7 @@ export default function SmoothScroll() {
     window.addEventListener("beforeunload", toTop);
 
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9, anchors: { offset: -70 } });
+    lenis = new Lenis({ lerp: 0.12, wheelMultiplier: 1, anchors: { offset: -70 } });
     lenis.on("scroll", ScrollTrigger.update);
     const raf = (time: number) => lenis?.raf(time * 1000);
     gsap.ticker.add(raf);
