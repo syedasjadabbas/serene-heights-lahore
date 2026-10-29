@@ -13,14 +13,14 @@ export default function Header() {
   const [solid, setSolid] = useState(!isHome);
   const [open, setOpen] = useState(false);
 
-  // On the home page the header stays transparent over the opening of the hero video.
+  // On the home page the header stays transparent over the hero sky.
   useEffect(() => {
     if (!isHome) { setSolid(true); return; }
     const onScroll = () => {
       const hero = document.querySelector<HTMLElement>(".hero");
       if (!hero) return setSolid(true);
       const p = window.scrollY / Math.max(1, hero.offsetHeight - window.innerHeight);
-      setSolid(p > 0.095); // before the white SERENE screen appears, so the menu never turns white-on-white
+      setSolid(p > 0.84); // once the clouds start turning the screen white, so the menu never goes white-on-white
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });

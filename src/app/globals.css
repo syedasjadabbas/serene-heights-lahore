@@ -123,47 +123,58 @@ main [id] { scroll-margin-top: 70px; }.drop a { display: block; padding: 9px 12p
 .fade-up.in { opacity: 1; transform: none; }
 
 /* ---------- Hero ---------- */
-.hero { position: relative; height: 1200vh; background: #dfe7f0; }
-.hero__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-.hero__media { position: absolute; inset: 0; transform-origin: 50% 70%; will-change: transform; }
-.hero__media video, .hero__media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
-.hero__sky { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,12,18,.38) 0%, rgba(8,12,18,.18) 38%, rgba(8,12,18,0) 60%); pointer-events: none; }
+.hero { position: relative; height: 900vh; background: #fff; }
+.hero__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: #2a3a55; }
+/* Dusk sky (built from the open sky around the tower render) */
+.hero__sky { position: absolute; inset: -4% 0 0; will-change: transform; transform-origin: 50% 100%; }
+.hero__sky-in { position: absolute; inset: 0; background: url("/assets/hero/sky.jpg") center 30% / cover no-repeat; will-change: transform; }
 .hero__copy { position: absolute; left: 0; right: 0; top: 17vh; text-align: center; z-index: 3; will-change: transform, opacity; padding: 0 var(--gutter); }
-.hero__title { font-size: clamp(42px, 6.3vw, 108px); font-weight: 600; letter-spacing: -.045em; line-height: .95; color: #fff; text-shadow: 0 4px 40px rgba(0,0,0,.35); }
-.hero__sub { margin-top: 22px; font-size: clamp(16px, 1.55vw, 22px); color: rgba(255,255,255,.72); letter-spacing: -.01em; text-shadow: 0 2px 20px rgba(0,0,0,.4); }
+.hero__title { font-size: clamp(42px, 6.3vw, 108px); font-weight: 600; letter-spacing: -.045em; line-height: .95; color: #fff; text-shadow: 0 4px 34px rgba(10,20,40,.28); }
+.hero__sub { margin-top: 22px; font-size: clamp(16px, 1.55vw, 22px); color: rgba(255,255,255,.78); letter-spacing: -.01em; text-shadow: 0 2px 18px rgba(10,20,40,.3); }
 .hero__sub b { color: #fff; font-weight: 500; }
-/* Transparent header over the hero video */
+/* Transparent header over the hero sky */
 .header:not(.is-solid) { color: #fff; }
 .header:not(.is-solid) .logo small { color: rgba(255,255,255,.75); }
 .header:not(.is-solid) .btn { background: #fff; color: var(--ink); border-color: #fff; }
 .hero__copy .btn { margin-top: 28px; }
-/* Clouds: three pre-rendered cloud banks (no live blur filters, so they're cheap to move).
-   Each starts as a low band and rises on scroll (Hero.tsx); the inner layer drifts slowly. */
-.clouds { position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0; }
-.fog { position: absolute; left: -12%; right: -12%; bottom: -58%; height: 95%; pointer-events: none; will-change: transform; }
-.fog span { position: absolute; inset: 0 -6%; background: center bottom / 100% 100% no-repeat; animation: cloudDrift 40s ease-in-out infinite alternate; }
-.fog--back { bottom: -46%; }
-.fog--back span { background-image: url("/assets/clouds/back.webp"); opacity: .85; animation-duration: 56s; }
-.fog--mid span { background-image: url("/assets/clouds/mid.webp"); animation-duration: 44s; animation-direction: alternate-reverse; }
-.fog--front { bottom: -66%; }
-.fog--front span { background-image: url("/assets/clouds/front.webp"); animation-duration: 34s; }
+/* The tower cut-out: sized and moved by Hero.tsx (the wrapper scrolls, the image does the load-in) */
+.hero__tower { position: absolute; z-index: 4; transform-origin: 50% 0; will-change: transform, opacity; pointer-events: none; }
+.hero__tower-in { display: block; width: 100%; height: 100%; will-change: transform; }
+/* "SERENE / Heights Lahore": an outline that traces in over the tower, then the same words filled with
+   the tower's facade (background-clip: text; Hero.tsx lines the facade up with the tower). */
+.hero__outline, .hero__fill {
+  position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding-bottom: 6vh; pointer-events: none; opacity: 0; will-change: opacity, transform; text-align: center;
+}
+.hero__word { font-size: clamp(78px, 17.5vw, 300px); font-weight: 700; letter-spacing: -.06em; line-height: .84; white-space: nowrap; padding: 0 .04em; }
+.hero__word-sub { margin-top: .12em; font-size: clamp(30px, 5.6vw, 96px); font-weight: 500; letter-spacing: -.04em; line-height: 1; white-space: nowrap; }
+.hero__outline { color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.92); }
+.hero__outline .hero__word-sub { -webkit-text-stroke-width: 1.25px; }
+.hero__fill { color: transparent; background-repeat: no-repeat; -webkit-background-clip: text; background-clip: text; }
+/* Clouds: three rendered cloud banks (our own, see public/assets/hero). Each layer's top edge is billowy;
+   the front one turns solid white towards its base, and a white block below it finishes the cover. */
+.clouds { position: absolute; inset: 0; z-index: 6; pointer-events: none; opacity: 0; }
+.fog { position: absolute; left: -15%; right: -15%; height: max(78vh, 66vw); will-change: transform; } /* as tall as the image, so its base is never cropped */
+.fog span { position: absolute; inset: 0 -5%; background: center top / cover no-repeat; animation: cloudDrift 40s ease-in-out infinite alternate; }
+.fog--back { top: 50vh; }
+.fog--back span { background-image: url("/assets/hero/cloud-back.webp"); opacity: .9; animation-duration: 58s; }
+.fog--mid { top: 58vh; }
+.fog--mid span { background-image: url("/assets/hero/cloud-mid.webp"); animation-duration: 46s; animation-direction: alternate-reverse; }
+.fog--front { top: 68vh; }
+.fog--front span { background-image: url("/assets/hero/cloud-front.webp"); animation-duration: 36s; }
+.fog--front::after { content: ""; position: absolute; left: 0; right: 0; top: 99%; height: 160vh; background: #fff; }
 .clouds.is-idle .fog span { animation-play-state: paused; }
+@media (max-width: 760px) {
+  .hero__word { font-size: 25vw; }
+  .hero__word-sub { font-size: 8.4vw; }
+  .fog--back { top: 44vh; }
+  .fog--mid { top: 52vh; }
+  .fog--front { top: 62vh; }
+}
 @keyframes cloudDrift {
-  from { transform: translate3d(-4%, 0, 0); }
-  to   { transform: translate3d(4%, -2%, 0); }
+  from { transform: translate3d(-3%, 0, 0); }
+  to   { transform: translate3d(3%, -1.5%, 0); }
 }
-/* White layer with black type, screen-blended: the letters become windows onto the video below. */
-.hero__brand { position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; opacity: 0; background: #fff; mix-blend-mode: screen; overflow: hidden; will-change: opacity; }
-.hero__mask {
-  font-size: clamp(76px, 19vw, 330px); font-weight: 700; letter-spacing: -.06em; line-height: .85;
-  color: #000; white-space: nowrap;
-  will-change: transform;
-}
-.hero__mask-sub { margin-top: .1em; font-size: clamp(30px, 6vw, 96px); font-weight: 500; letter-spacing: -.04em; color: #000; will-change: opacity, transform; }
-.hero__scroll { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 7; font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.5); opacity: 0; }
-.hero__scroll .hint-in { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.hero__scroll i { width: 1px; height: 38px; background: linear-gradient(#fff, transparent); animation: drip 1.8s var(--ease) infinite; transform-origin: top; }
-@keyframes drip { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); opacity: 1; } 100% { opacity: 0; } }
 
 /* ---------- Generic section grid ---------- */
 .sec { padding: clamp(80px, 10vw, 150px) 0; position: relative; }
@@ -408,7 +419,7 @@ main [id] { scroll-margin-top: 70px; }.drop a { display: block; padding: 9px 12p
   .svc__row { gap: 16px; padding: 22px 0; }
   .svc__peek { display: none; }
   .arrows__row { margin: 40px auto 36px; }
-  .hero { height: 940vh; }
+  .hero { height: 780vh; }
   .hero__copy { top: 18vh; }
   .stats { grid-template-columns: 1fr 1fr; }
   .stat { border-right: 0; border-bottom: 1px solid var(--line); }
@@ -429,24 +440,13 @@ main [id] { scroll-margin-top: 70px; }.drop a { display: block; padding: 9px 12p
 .devs__by img { width: auto; }
 /* next/image "fill" sets inline inset/size; give the outro photo parallax headroom */
 .outro img { inset: -10% 0 auto 0 !important; height: 120% !important; }
-.hero__media .hero__vid { position: absolute; inset: 0; visibility: hidden; }
 
 /* Hero load-in start states (animated in by Hero.tsx) */
-.hero__media-in { position: absolute; inset: 0; will-change: transform; }
 .hero__copy-in { will-change: transform, opacity; }
 .hero__title .wd { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .03em .12em; margin-bottom: -.12em; }
 .hero__title .wd { margin: 0 .1em; }
 .hero__title .wd > span { display: inline-block; transform: translateY(108%); opacity: 0; filter: blur(10px); will-change: transform, opacity, filter; }
 .hero__sub, .hero__copy .btn { opacity: 0; transform: translateY(26px); }
-.hero__mask .lt { display: inline-block; }
-
-/* Scroll-driven footage: shade + captions over the full-screen video */
-.hero__shade { position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0; background: linear-gradient(0deg, rgba(8,10,12,.72) 0%, rgba(8,10,12,.25) 38%, rgba(8,10,12,0) 60%); }
-.hero__captions { position: absolute; left: 0; right: 0; bottom: clamp(40px, 9vh, 90px); z-index: 5; padding: 0 var(--gutter); max-width: var(--max); margin: 0 auto; color: #fff; pointer-events: none; }
-.hero__captions p { font-size: clamp(30px, 4.4vw, 72px); font-weight: 500; letter-spacing: -.04em; line-height: 1.04; opacity: 0; will-change: transform, opacity; }
-.hero__captions p + p { color: rgba(255,255,255,.62); }
-/* The canvas shows the footage; the <video>s underneath only decode (see HeroVideo.tsx). */
-.hero__media .hero__frames { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 60%; background: center 60% / cover no-repeat; }
 
 /* =========================================================
    Scroll motion for the sections under the hero.
