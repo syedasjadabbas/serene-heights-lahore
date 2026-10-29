@@ -3,7 +3,7 @@ import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import Btn from "@/components/Btn";
-import { site, tel } from "@/lib/site";
+import { enquire, site, tel } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Invest",
@@ -60,7 +60,7 @@ export default function InvestPage() {
               <Reveal className="huge" text="From PKR 2 Million." />
               <p className="lead" style={{ marginTop: 24, color: "#a9adad" }}>Become a part-owner of a 21-storey commercial landmark — without buying a whole floor. Speak to our team for current availability and payment plans.</p>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 28 }}>
-                <Btn href="/contact" variant="light">Request Payment Plan</Btn>
+                <Btn href={enquire("smart")} variant="light">Request Payment Plan</Btn>
                 <Btn href={tel(main)} variant="ghost" arrow={false}>Call {main}</Btn>
               </div>
             </div>

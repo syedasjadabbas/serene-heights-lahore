@@ -3,6 +3,7 @@ import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import Outro from "@/components/Outro";
+import { enquire } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Design & Amenities",
@@ -83,7 +84,7 @@ export default function AmenitiesPage() {
         </div>
       </section>
 
-      <Outro img="/assets/amenities/amenities-1-new.jpg" title="See It for Yourself." ghost="Visit Gulberg Main Boulevard." cta="Book a Visit" href="/contact" />
+      <Outro img="/assets/amenities/amenities-1-new.jpg" title="See It for Yourself." ghost="Visit Gulberg Main Boulevard." cta="Book a Visit" href={enquire("visit")} />
     </>
   );
 }

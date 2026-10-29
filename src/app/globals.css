@@ -88,7 +88,9 @@ h1, h2, h3, h4, p { margin: 0; }
   transition: all .25s var(--ease);
 }
 .has-drop:hover .drop, .has-drop:focus-within .drop { opacity: 1; visibility: visible; transform: none; }
-.drop a { display: block; padding: 9px 12px; border-radius: 8px; font-size: 13.5px; }
+.has-drop.is-closed .drop { opacity: 0; visibility: hidden; transform: translateY(6px); }
+/* Sections reached by a #link land just below the fixed header (70px), however the page scrolls there. */
+main [id] { scroll-margin-top: 70px; }.drop a { display: block; padding: 9px 12px; border-radius: 8px; font-size: 13.5px; }
 .drop a::after { display: none; }
 .drop a:hover { background: var(--mist); }
 .burger { display: none; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--ink); position: relative; }
@@ -105,7 +107,12 @@ h1, h2, h3, h4, p { margin: 0; }
 .menu-open .mobile-menu { opacity: 1; visibility: visible; }
 .menu-open .header { background: transparent; box-shadow: none; color: #fff; }
 .mobile-menu a { font-size: 34px; letter-spacing: -.02em; font-weight: 500; padding: 6px 0; border-bottom: 1px solid var(--line-dark); }
-.mobile-menu .btn { margin-top: 28px; align-self: flex-start; font-size: 14px; border-bottom: 0; padding: 0 20px; }
+.mobile-menu .btn { margin-top: 28px; align-self: flex-start; font-size: 14px; border-bottom: 0; padding: 0 20px; flex-shrink: 0; }
+.mobile-menu { overflow-y: auto; overscroll-behavior: contain; }
+.mobile-menu > a { font-size: 30px; }
+.mobile-menu__group { display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 10px 0 12px; border-bottom: 1px solid var(--line-dark); }
+.mobile-menu__group span { width: 100%; font-size: 30px; letter-spacing: -.02em; font-weight: 500; margin-bottom: 6px; }
+.mobile-menu__group a { font-size: 14px; padding: 7px 12px; border: 1px solid var(--line-dark); border-radius: 999px; color: #cfd3d3; }
 
 /* ---------- Reveal text ---------- */
 [data-reveal] .ch, [data-reveal] .w { color: var(--muted); transition: color .25s linear; }
@@ -475,6 +482,7 @@ h1, h2, h3, h4, p { margin: 0; }
 
 /* Services: the big words glide in from the right as each row arrives. */
 .svc__list[data-stagger] > * { transform: none; }
+.svc__list { overflow-x: clip; overflow-clip-margin: 12px; } /* the words slide in from off-screen; never widen the page */
 .svc__list .svc__word { transform: translateX(90px); transition: color .4s var(--ease), transform 1.2s var(--ease); transition-delay: 0s, calc(var(--i, 0) * 120ms); }
 .svc__list.in .svc__word { transform: none; }
 .svc__list.in .svc__row:hover .svc__word { transform: translateX(10px); transition-delay: 0s; }

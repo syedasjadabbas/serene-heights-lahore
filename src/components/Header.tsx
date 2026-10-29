@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { nav } from "@/lib/site";
+import { enquire, nav } from "@/lib/site";
 import { Arrow, Chevron } from "./icons";
 import { scrollToTop } from "./SmoothScroll";
 
@@ -56,13 +56,14 @@ export default function Header() {
           <nav className="nav" aria-label="Main">
             {nav.map((item) =>
               item.children ? (
-                <span className="has-drop" key={item.label}>
+                // Once a section is picked the dropdown closes, and stays closed until the pointer leaves.
+                <span className="has-drop" key={item.label} onMouseLeave={(e) => e.currentTarget.classList.remove("is-closed")}>
                   <Link href={item.href} className={section === item.href.split("#")[0] && !item.href.includes("#") ? "is-active" : ""}>
                     {item.label} <Chevron />
                   </Link>
                   <span className="drop">
                     {item.children.map((c) => (
-                      <Link key={c.href} href={c.href}>{c.label}</Link>
+                      <Link key={c.href} href={c.href} onClick={(e) => { e.currentTarget.blur(); e.currentTarget.closest(".has-drop")?.classList.add("is-closed"); }}>{c.label}</Link>
                     ))}
                   </span>
                 </span>
@@ -73,18 +74,26 @@ export default function Header() {
               )
             )}
           </nav>
-          <Link className="btn" href="/contact">Book a Visit</Link>
+          <Link className="btn" href={enquire("visit")}>Book a Visit</Link>
           <button className="burger" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen(!open)}>
             <span />
           </button>
         </div>
       </header>
-      <div className="mobile-menu">
+      {/* Every link closes the menu, including ones to the page we're already on. */}
+      <div className="mobile-menu" onClick={(e) => { if ((e.target as Element).closest("a")) setOpen(false); }}>
         <Link href="/">Home</Link>
-        {nav.filter((n) => !n.href.includes("#")).map((n) => (
-          <Link key={n.href} href={n.href}>{n.label}</Link>
-        ))}
-        <Link className="btn btn--light" href="/contact">Book a Visit <Arrow /></Link>
+        {nav.map((n) =>
+          n.children ? (
+            <div className="mobile-menu__group" key={n.label}>
+              <span>{n.label}</span>
+              {n.children.map((c) => <Link key={c.href} href={c.href}>{c.label}</Link>)}
+            </div>
+          ) : (
+            <Link key={n.href} href={n.href}>{n.label}</Link>
+          )
+        )}
+        <Link className="btn btn--light" href={enquire("visit")}>Book a Visit <Arrow /></Link>
       </div>
     </>
   );

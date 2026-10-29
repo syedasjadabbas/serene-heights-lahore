@@ -1,19 +1,18 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Arrow } from "./icons";
-
-const interests = [
-  "Commercial / Retail Floors",
-  "Office Floors",
-  "Co-Working Floors",
-  "Hotel Apartments",
-  "Smart Property (from PKR 2 million)",
-  "Site Visit",
-];
+import { interests, type InterestKey } from "@/lib/site";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const select = useRef<HTMLSelectElement>(null);
+
+  // "Enquire About Offices" etc. link here as /contact?for=offices: preselect that interest.
+  useEffect(() => {
+    const key = new URLSearchParams(location.search).get("for") as InterestKey | null;
+    if (key && key in interests && select.current) select.current.value = interests[key];
+  }, []);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,7 +39,7 @@ export default function ContactForm() {
       <div className="field full"><label htmlFor="f-email">Email</label><input id="f-email" name="email" type="email" /></div>
       <div className="field full">
         <label htmlFor="f-int">I&apos;m interested in</label>
-        <select id="f-int" name="interest">{interests.map((o) => <option key={o}>{o}</option>)}</select>
+        <select id="f-int" name="interest" ref={select}>{Object.values(interests).map((o) => <option key={o}>{o}</option>)}</select>
       </div>
       <div className="field full"><label htmlFor="f-msg">Message</label><textarea id="f-msg" name="message" /></div>
       <div className="full">

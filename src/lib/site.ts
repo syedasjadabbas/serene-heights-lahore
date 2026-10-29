@@ -10,6 +10,18 @@ export const site = {
   },
 };
 
+/** Contact-form interests; link to /contact?for=<key> to preselect one. */
+export const interests = {
+  retail: "Commercial / Retail Floors",
+  offices: "Office Floors",
+  coworking: "Co-Working Floors",
+  hotel: "Hotel Apartments",
+  smart: "Smart Property (from PKR 2 million)",
+  visit: "Site Visit",
+} as const;
+export type InterestKey = keyof typeof interests;
+export const enquire = (key: InterestKey) => `/contact?for=${key}`;
+
 /** "0304-1111106" -> "tel:03041111106" */
 export const tel = (n: string) => `tel:${n.replace(/\D/g, "")}`;
 

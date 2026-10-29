@@ -6,6 +6,7 @@ import Btn from "@/components/Btn";
 import DevSlider from "@/components/DevSlider";
 import ServicesList from "@/components/ServicesList";
 import Outro from "@/components/Outro";
+import { enquire } from "@/lib/site";
 import StatsBand from "@/components/StatsBand";
 import { Arrow } from "@/components/icons";
 
@@ -66,7 +67,7 @@ export default function Home() {
         <div className="wrap split">
           <div>
             <Reveal className="huge" text={"Real Estate,\nElevated."} />
-            <Btn href="/contact" style={{ marginTop: 30 }}>Book a Site Visit</Btn>
+            <Btn href={enquire("visit")} style={{ marginTop: 30 }}>Book a Site Visit</Btn>
           </div>
           <div>
             <div className="label">Steps</div>
