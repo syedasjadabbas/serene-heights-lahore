@@ -6,9 +6,46 @@ import Btn from "@/components/Btn";
 import DevSlider from "@/components/DevSlider";
 import ServicesList from "@/components/ServicesList";
 import Outro from "@/components/Outro";
-import { enquire } from "@/lib/site";
+import { enquire, pageMeta, SITE_URL, site } from "@/lib/site";
 import StatsBand from "@/components/StatsBand";
 import { Arrow } from "@/components/icons";
+
+export const metadata = pageMeta({
+  description:
+    "Serene Heights Lahore — a landmark 21-storey mixed-use commercial development on Gulberg Main Boulevard: commercial floors, offices, co-working and hotel apartments.",
+  path: "/",
+  image: "/assets/amenities/amenities-1-new.jpg",
+});
+
+// Structured data, so search engines know the project, its address, phones and developers.
+const intl = (n: string) => `+92-${n.replace(/\D/g, "").slice(1)}`; // "0304-1111106" -> "+92-3041111106"
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#org`,
+      name: site.name,
+      url: SITE_URL,
+      logo: `${SITE_URL}/assets/logo/serene-blue-transp.png`,
+      email: site.email,
+      contactPoint: [
+        ...site.phones.commercial.numbers.map((n) => ({ "@type": "ContactPoint", telephone: intl(n), contactType: "sales", areaServed: "PK", description: site.phones.commercial.label })),
+        ...site.phones.hospitality.numbers.map((n) => ({ "@type": "ContactPoint", telephone: intl(n), contactType: "sales", areaServed: "PK", description: site.phones.hospitality.label })),
+      ],
+    },
+    {
+      "@type": "Place",
+      "@id": `${SITE_URL}/#building`,
+      name: site.name,
+      description: site.tagline,
+      url: SITE_URL,
+      image: `${SITE_URL}/assets/amenities/amenities-1-new.jpg`,
+      address: { "@type": "PostalAddress", streetAddress: "Gulberg Main Boulevard", addressLocality: "Lahore", addressRegion: "Punjab", addressCountry: "PK" },
+      telephone: intl(site.phones.commercial.numbers[0]),
+    },
+  ],
+};
 
 const chevrons = [
   "/assets/chev/p9.webp",
@@ -44,6 +81,7 @@ const directory = [
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Hero />
 
       <section className="sec">

@@ -1,3 +1,8 @@
+import type { Metadata } from "next";
+
+/** Live address of the site (used for link previews, the sitemap and canonical URLs). */
+export const SITE_URL = "https://www.sereneheightslahore.com";
+
 export const site = {
   name: "Serene Heights Lahore",
   tagline: "A landmark 21-storey mixed-use commercial development on Gulberg Main Boulevard, Lahore.",
@@ -49,3 +54,15 @@ export const nav = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
+
+/** Page metadata: title, description, canonical address and the link preview (WhatsApp, Facebook, X…). */
+export function pageMeta({ title, description, path, image }: { title?: string; description: string; path: string; image: string }): Metadata {
+  const full = title ? `${title} | ${site.name}` : `${site.name} | 21-Storey Commercial Landmark on Gulberg Main Boulevard`;
+  return {
+    ...(title ? { title } : {}),
+    description,
+    alternates: { canonical: path },
+    openGraph: { title: full, description, url: path, siteName: site.name, images: [{ url: image, alt: full }], type: "website", locale: "en_PK" },
+    twitter: { card: "summary_large_image", title: full, description, images: [image] },
+  };
+}

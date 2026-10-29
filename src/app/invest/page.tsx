@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import Btn from "@/components/Btn";
-import { enquire, site, tel } from "@/lib/site";
+import { enquire, pageMeta, site, tel } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Invest",
   description:
     "Unique investment opportunities at Serene Heights Lahore: high rental demand, capital appreciation, 2-year delivery, smart property units from PKR 2 million and flexible payment plans.",
-};
+  path: "/invest",
+  image: "/assets/home/building-7-new.jpg",
+});
 
 const reasons = [
   { id: "rental", icon: "rental", title: "High Rental Demand", text: "Located on Gulberg Main Boulevard and within walking distance of the CBD, the project benefits from consistent demand from corporates, professionals and hospitality users. Limited premium commercial supply in the area positions the development for strong occupancy and sustainable rental returns." },

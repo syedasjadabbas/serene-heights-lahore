@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Arrow } from "./icons";
+import Honeypot from "./Honeypot";
 import { interests, type InterestKey } from "@/lib/site";
 
 export default function ContactForm() {
@@ -42,6 +43,7 @@ export default function ContactForm() {
         <select id="f-int" name="interest" ref={select}>{Object.values(interests).map((o) => <option key={o}>{o}</option>)}</select>
       </div>
       <div className="field full"><label htmlFor="f-msg">Message</label><textarea id="f-msg" name="message" /></div>
+      <Honeypot />
       <div className="full">
         <button className="btn" type="submit" disabled={status === "sending"}>
           {status === "sending" ? "Sending…" : "Send Enquiry"} <Arrow />

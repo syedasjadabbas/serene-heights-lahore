@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import Btn from "@/components/Btn";
 import Outro from "@/components/Outro";
-import { enquire } from "@/lib/site";
+import { enquire, pageMeta } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "The Project",
   description:
     "Project overview and building configuration of Serene Heights Lahore: Lower Ground + 6 commercial floors, 5 parking floors, 7 office floors, 2 co-working floors and 2 hotel apartment floors.",
-};
+  path: "/project",
+  image: "/assets/project/image-1-new.jpg",
+});
 
 const stats = [
   ["LG+6", "Commercial Floors"],
@@ -108,6 +109,21 @@ export default function ProjectPage() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="sec" id="parking">
+        <div className="wrap">
+          <div className="split">
+            <div className="label">Parking</div>
+            <div>
+              <Reveal className="huge" text={"Drive Straight\nto Your Floor."} />
+              <p className="lead" style={{ marginTop: 24, color: "#5f6464" }}>5 dedicated above-ground parking floors with drive-through ramps give vehicle access to almost every level — solving the parking problem that holds back most of Gulberg&apos;s commercial buildings.</p>
+            </div>
+          </div>
+          <div className="reveal-img" style={{ marginTop: 60 }}>
+            <Image src="/assets/project/Image10.jpg" alt="Drive-through ramp and parking levels at Serene Heights Lahore" width={2200} height={1396} sizes="100vw" style={{ width: "100%", height: "auto" }} />
+          </div>
         </div>
       </section>
 

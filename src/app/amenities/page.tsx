@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import Outro from "@/components/Outro";
-import { enquire } from "@/lib/site";
+import { enquire, pageMeta } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Design & Amenities",
   description:
     "Architecture, services and amenities at Serene Heights Lahore: 24/7 security, high-speed elevators, 5 parking floors, EV charging, gym, rooftop helipad and in-house management.",
-};
+  path: "/amenities",
+  image: "/assets/amenities/amenities-2-new.jpg",
+});
 
 const chevrons = [
   "/assets/chev/am1.webp",

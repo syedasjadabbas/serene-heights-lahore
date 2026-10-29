@@ -5,12 +5,36 @@ export const runtime = "nodejs";
 
 const clean = (v: unknown, max = 2000) => String(v ?? "").replace(/[\r\n]+/g, " ").trim().slice(0, max);
 
+// Spam guards. Bots that trip them get a normal-looking "ok", so they don't learn to adapt.
+const MIN_FILL_MS = 2500;          // people take longer than this to fill a form in
+const LIMIT = 5, WINDOW_MS = 10 * 60_000; // at most 5 enquiries per visitor per 10 minutes
+const recent = new Map<string, number[]>(); // per server instance; enough to stop a burst
+
+function tooMany(ip: string) {
+  const now = Date.now();
+  const hits = (recent.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  hits.push(now);
+  recent.set(ip, hits);
+  if (recent.size > 5000) recent.clear(); // keep memory bounded
+  return hits.length > LIMIT;
+}
+
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+
+  const since = Number(body.since);
+  if (clean(body.company) || !since || Date.now() - since < MIN_FILL_MS) {
+    console.warn("[enquiry] dropped: looks automated");
+    return NextResponse.json({ ok: true });
+  }
+  const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "local";
+  if (tooMany(ip)) {
+    return NextResponse.json({ error: "Too many requests — please call us instead." }, { status: 429 });
   }
 
   const type = body.type === "callback" ? "callback" : "enquiry";

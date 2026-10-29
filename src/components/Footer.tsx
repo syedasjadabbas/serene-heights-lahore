@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { site, tel } from "@/lib/site";
 import { Arrow } from "./icons";
+import Honeypot from "./Honeypot";
 import { scrollToTop } from "./SmoothScroll";
 
 export default function Footer() {
@@ -14,14 +15,13 @@ export default function Footer() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const phone = new FormData(form).get("phone");
     setBusy(true);
     setMsg("");
     try {
       const res = await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: "callback", phone }),
+        body: JSON.stringify({ type: "callback", ...Object.fromEntries(new FormData(form)) }),
       });
       if (!res.ok) throw new Error();
       setMsg("Thank you — our team will call you shortly.");
@@ -43,6 +43,7 @@ export default function Footer() {
             <h3>Request a Callback</h3>
             <form className="sub-form" onSubmit={onSubmit}>
               <input name="phone" type="tel" placeholder="Enter your phone number" aria-label="Phone number" required minLength={7} />
+              <Honeypot />
               <button aria-label="Submit" disabled={busy}><Arrow /></button>
             </form>
             <div className="sub-ok" aria-live="polite">{msg}</div>

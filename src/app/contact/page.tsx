@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import ContactForm from "@/components/ContactForm";
 import Outro from "@/components/Outro";
-import { site, tel } from "@/lib/site";
+import { pageMeta, site, tel } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Contact",
   description:
     "Contact Serene Heights Lahore — Gulberg Main Boulevard, Lahore. Corporate office / commercial: 0304-1111106. Co-working / hotel apartments: 0321-4979446, 0300-8497999.",
-};
+  path: "/contact",
+  image: "/assets/contact/contact-1.jpg",
+});
 
 export default function ContactPage() {
   const groups = [site.phones.commercial, site.phones.hospitality];

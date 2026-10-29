@@ -436,6 +436,12 @@ main [id] { scroll-margin-top: 70px; }.drop a { display: block; padding: 9px 12p
 }
 
 .btn[disabled] { opacity: .6; cursor: wait; }
+.sec:not(.dark) .btn--ghost { color: var(--ink); border-color: var(--line-strong, rgba(0,0,0,.25)); }
+.sec:not(.dark) .btn--ghost:hover { background: var(--ink); color: #fff; }
+.nf-links { margin-top: 64px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); column-gap: 48px; border-top: 1px solid var(--line); }
+.nf-links a { display: flex; justify-content: space-between; padding: 22px 4px; border-bottom: 1px solid var(--line); font-size: clamp(20px, 2vw, 28px); letter-spacing: -.03em; transition: color .3s, padding .4s var(--ease); }
+.nf-links a:hover { color: var(--navy); padding-left: 14px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; } /* bot trap field */
 .footer__mark img { height: auto; }
 .devs__by img { width: auto; }
 /* next/image "fill" sets inline inset/size; give the outro photo parallax headroom */

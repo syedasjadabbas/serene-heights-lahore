@@ -1,13 +1,16 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import PageHero from "@/components/PageHero";
+import { pageMeta } from "@/lib/site";
 import Reveal from "@/components/Reveal";
 import Outro from "@/components/Outro";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "About",
-  description: "Serene Heights Lahore is a joint venture by Fatir Developers, Falah Developers and DM Consortium.",
-};
+  description:
+    "Serene Heights Lahore is a joint venture by Fatir Developers, Falah Developers and DM Consortium.",
+  path: "/about",
+  image: "/assets/home/building-brand.jpg",
+});
 
 const partners = [
   {

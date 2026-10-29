@@ -26,3 +26,6 @@ Thumbs.db
 .vscode/
 .idea/
 
+
+# The earlier plain-HTML version (and the original hero video master): kept locally for reference only
+legacy-static/
