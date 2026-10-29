@@ -46,14 +46,15 @@ export default function Hero() {
     /* ---------- Load-in ---------- */
     const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
     if (reduced) {
-      tl.set([words, ".hero__sub", ".hero__copy .btn", ".clouds"], { y: 0, opacity: 1, filter: "none" });
+      tl.set([words, ".hero__eyebrow", ".hero__sub", ".hero__cta .btn", ".clouds"], { y: 0, opacity: 1, filter: "none" });
     } else {
       tl.fromTo(".hero__sky-in", { scale: 1.14 }, { scale: 1, duration: 3.4, ease: "power3.out" }, 0)
         .fromTo(".hero__tower-in", { yPercent: 16 }, { yPercent: 0, duration: 2.8, ease: "power3.out" }, 0.1)
         .fromTo(".clouds", { yPercent: 12, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 2.6, ease: "power2.out" }, 0)
+        .to(".hero__eyebrow", { y: 0, opacity: 1, duration: 1.2 }, 0.3)
         .to(words, { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.5, stagger: 0.07 }, 0.45)
         .to(".hero__sub", { y: 0, opacity: 1, duration: 1.2 }, 1.05)
-        .to(".hero__copy .btn", { y: 0, opacity: 1, scale: 1, duration: 1.1 }, 1.2);
+        .to(".hero__cta .btn", { y: 0, opacity: 1, scale: 1, duration: 1.1 }, 1.3);
     }
 
     /* ---------- Pointer parallax (desktop): sky, tower and clouds at different depths ---------- */
@@ -75,7 +76,7 @@ export default function Hero() {
     const el = root.current!;
     const q = <T extends HTMLElement>(s: string) => el.querySelector<T>(s)!;
     const qa = <T extends HTMLElement>(s: string) => Array.from(el.querySelectorAll<T>(s));
-    const stage = q(".hero__stage"), sky = q(".hero__sky"), copyIn = q(".hero__copy-in");
+    const stage = q(".hero__stage"), sky = q(".hero__sky"), copyIn = q(".hero__copy-in"), cta = q(".hero__cta");
     const tower = q(".hero__tower"), outline = q(".hero__outline"), fill = q(".hero__fill");
     const fogs = qa(".fog"), clouds = q(".clouds");
 
@@ -103,6 +104,11 @@ export default function Hero() {
       const out = seg(p, 0, 0.14);
       copyIn.style.transform = `translateY(${-smooth(out) * 160}px)`;
       copyIn.style.opacity = String(1 - seg(p, 0.02, 0.13));
+      // The button sits in the corner, clear of the rising tower; it leaves with the headline.
+      const ctaOut = seg(p, 0.02, 0.12);
+      cta.style.opacity = String(1 - ctaOut);
+      cta.style.transform = `translateY(${ctaOut * 24}px)`;
+      cta.style.visibility = ctaOut >= 1 ? "hidden" : "visible";
       // 2. The tower rises and grows (zoom eased exponentially, so it reads as one camera move).
       const e = inOut(seg(p, RISE[0], RISE[1]));
       tower.style.transform = `translate3d(0, ${g.ty1 * e}px, 0) scale(${Math.pow(g.S1, e)})`;
@@ -150,13 +156,13 @@ export default function Hero() {
         <div className="hero__sky"><div className="hero__sky-in" /></div>
         <div className="hero__copy">
           <div className="hero__copy-in">
+            <p className="hero__eyebrow">Gulberg Main Boulevard · Lahore</p>
             <h1 className="hero__title" aria-label={TITLE}>
               {TITLE.split(" ").map((w, i) => (
                 <span className="wd" key={i} aria-hidden="true"><span>{w}</span></span>
               ))}
             </h1>
             <p className="hero__sub">Prime address. <b>High demand.</b> Strong value.</p>
-            <Btn href="/project" variant="light">Explore the Project</Btn>
           </div>
         </div>
         <div className="hero__tower">
@@ -168,6 +174,7 @@ export default function Hero() {
         <div className="clouds" aria-hidden="true">
           {CLOUD_LAYERS.map((d) => <div className={`fog fog--${d}`} key={d}><span /></div>)}
         </div>
+        <div className="hero__cta"><Btn href="/project">Explore the Project</Btn></div>
       </div>
     </section>
   );

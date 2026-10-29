@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 
-/** Live address of the site (used for link previews, the sitemap and canonical URLs). */
-export const SITE_URL = "https://www.sereneheightslahore.com";
+/**
+ * Live address of the site (used for link previews, the sitemap and canonical URLs).
+ * Set NEXT_PUBLIC_SITE_URL once the real domain is connected; until then a Vercel deployment uses its
+ * own production address (VERCEL_PROJECT_PRODUCTION_URL, set by Vercel automatically).
+ */
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://www.sereneheightslahore.com")
+).replace(/\/$/, "");
 
 export const site = {
   name: "Serene Heights Lahore",
