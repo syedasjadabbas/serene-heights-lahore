@@ -20,7 +20,7 @@ export default function Header() {
       const hero = document.querySelector<HTMLElement>(".hero");
       if (!hero) return setSolid(true);
       const p = window.scrollY / Math.max(1, hero.offsetHeight - window.innerHeight);
-      setSolid(p > 0.13); // before the white SERENE screen appears, so the menu never turns white-on-white
+      setSolid(p > 0.095); // before the white SERENE screen appears, so the menu never turns white-on-white
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
