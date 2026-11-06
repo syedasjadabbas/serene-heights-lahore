@@ -38,4 +38,6 @@ Both forms are protected against bots: a hidden trap field, a minimum time to fi
 
 Push to GitHub and import the repo on Vercel (zero config), or run `npm run build && npm start` on any Node 20+ host. Add the SMTP variables in the host's environment settings.
 
+Security headers (HSTS, frame/sniffing/referrer/permissions policies) and caching for `public/assets` are set in `next.config.ts`. The enquiry API also refuses cross-site posts and bodies over 16 KB.
+
 Once the real domain is connected, set `NEXT_PUBLIC_SITE_URL` (e.g. `https://www.sereneheightslahore.com`) in the host's environment settings and redeploy; until then Vercel's own production address is used for link previews and the sitemap. Old addresses from the previous site (`/lahore`, `/lahore/the-project`, …) redirect permanently to the new pages (see `next.config.ts`).

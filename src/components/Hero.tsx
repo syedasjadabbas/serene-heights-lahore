@@ -4,6 +4,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import Image from "next/image";
 import Btn from "./Btn";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -14,7 +15,6 @@ const smooth = (t: number) => t * t * (3 - 2 * t);
 const inOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 const TITLE = "A New Standard of Urban Living";
-const TOWER = "/assets/hero/tower.webp";
 const TOWER_ASPECT = 1072 / 2660; // width / height of the cut-out
 const FOCUS = 0.4; // point down the tower (share of its height) that ends up behind the letters
 
@@ -35,41 +35,25 @@ const CLOUD_LAYERS = ["back", "mid", "front"] as const;
  */
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
+  const towerZoom = useRef(1); // S1 below: the tower box is laid out this much larger than it first appears
 
+  // The load-in (sky settles, tower rises, headline word by word) is plain CSS — see "Hero load-in" in
+  // globals.css — so it plays on first paint instead of waiting for hydration (it is the page's LCP).
+  // It animates the individual `translate`/`scale` properties, so it composes with the GSAP transforms below.
+
+  /* ---------- Pointer parallax (desktop): sky, tower and clouds at different depths ---------- */
   useGSAP(() => {
-    const el = root.current!;
-    const q = <T extends HTMLElement>(s: string) => el.querySelector<T>(s)!;
-    const qa = <T extends HTMLElement>(s: string) => Array.from(el.querySelectorAll<T>(s));
-    const words = qa(".hero__title .wd > span");
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    /* ---------- Load-in ---------- */
-    const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-    if (reduced) {
-      tl.set([words, ".hero__eyebrow", ".hero__sub", ".hero__cta .btn", ".clouds"], { y: 0, opacity: 1, filter: "none" });
-    } else {
-      tl.fromTo(".hero__sky-in", { scale: 1.14 }, { scale: 1, duration: 3.4, ease: "power3.out" }, 0)
-        .fromTo(".hero__tower-in", { yPercent: 16 }, { yPercent: 0, duration: 2.8, ease: "power3.out" }, 0.1)
-        .fromTo(".clouds", { yPercent: 12, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 2.6, ease: "power2.out" }, 0)
-        .to(".hero__eyebrow", { y: 0, opacity: 1, duration: 1.2 }, 0.3)
-        .to(words, { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.5, stagger: 0.07 }, 0.45)
-        .to(".hero__sub", { y: 0, opacity: 1, duration: 1.2 }, 1.05)
-        .to(".hero__cta .btn", { y: 0, opacity: 1, scale: 1, duration: 1.1 }, 1.3);
-    }
-
-    /* ---------- Pointer parallax (desktop): sky, tower and clouds at different depths ---------- */
-    if (!reduced && matchMedia("(hover: hover)").matches) {
-      const sx = gsap.quickTo(".hero__sky-in", "x", { duration: 2, ease: "power3.out" });
-      const tx = gsap.quickTo(".hero__tower-in", "x", { duration: 1.6, ease: "power3.out" });
-      const cx = gsap.quickTo(".clouds", "x", { duration: 1.8, ease: "power3.out" });
-      const hx = gsap.quickTo(q(".hero__copy"), "x", { duration: 1.8, ease: "power3.out" });
-      const onMove = (e: PointerEvent) => {
-        const nx = e.clientX / innerWidth - 0.5;
-        sx(nx * -10); tx(nx * -18); cx(nx * -40); hx(nx * 8);
-      };
-      window.addEventListener("pointermove", onMove);
-      return () => window.removeEventListener("pointermove", onMove);
-    }
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || !matchMedia("(hover: hover)").matches) return;
+    const sx = gsap.quickTo(".hero__sky-in", "x", { duration: 2, ease: "power3.out" });
+    const tx = gsap.quickTo(".hero__tower-in", "x", { duration: 1.6, ease: "power3.out" });
+    const cx = gsap.quickTo(".clouds", "x", { duration: 1.8, ease: "power3.out" });
+    const hx = gsap.quickTo(".hero__copy", "x", { duration: 1.8, ease: "power3.out" });
+    const onMove = (e: PointerEvent) => {
+      const nx = e.clientX / innerWidth - 0.5;
+      sx(nx * -10); tx(nx * -18 * towerZoom.current); cx(nx * -40); hx(nx * 8); // tower: ~18px on screen at the start
+    };
+    window.addEventListener("pointermove", onMove);
+    return () => window.removeEventListener("pointermove", onMove);
   }, { scope: root });
 
   useGSAP(() => {
@@ -78,10 +62,18 @@ export default function Hero() {
     const qa = <T extends HTMLElement>(s: string) => Array.from(el.querySelectorAll<T>(s));
     const stage = q(".hero__stage"), sky = q(".hero__sky"), copyIn = q(".hero__copy-in"), cta = q(".hero__cta");
     const tower = q(".hero__tower"), outline = q(".hero__outline"), fill = q(".hero__fill");
-    const fogs = qa(".fog"), clouds = q(".clouds");
+    const fogs = qa(".fog"), clouds = q(".clouds"), towerImg = q<HTMLImageElement>(".hero__tower-in");
+
+    // The letters reuse whichever tower file the browser picked from the srcset, so it's downloaded once.
+    // It can pick a bigger one later (window resized), which fires "load" again.
+    const useFacade = () => { fill.style.backgroundImage = `url("${towerImg.currentSrc || towerImg.src}")`; };
+    if (towerImg.complete) useFacade();
+    towerImg.addEventListener("load", useFacade);
 
     // Tower geometry, in px, recomputed on resize. The tower starts small with its top just below the
     // headline and its base in the clouds; it ends wide enough to sit behind the whole "SERENE" word.
+    // The box is laid out at its final (largest) size and scaled *down* at the start: browsers rasterise
+    // a transformed layer once and stretch that bitmap, so growing a small box blurs the facade.
     const g = { W0: 0, H0: 0, top0: 0, S1: 1, ty1: 0 };
     const measure = () => {
       const vw = stage.clientWidth, vh = stage.clientHeight;
@@ -91,10 +83,11 @@ export default function Hero() {
       const word = q(".hero__fill .hero__word").getBoundingClientRect().width / (gsap.getProperty(fill, "scale") as number || 1);
       g.S1 = Math.max(1.4, (word * 1.12) / g.W0);
       g.ty1 = vh * 0.47 - g.top0 - FOCUS * g.H0 * g.S1;
-      Object.assign(tower.style, { width: `${g.W0}px`, height: `${g.H0}px`, left: `${(vw - g.W0) / 2}px`, top: `${g.top0}px` });
+      towerZoom.current = g.S1;
+      const W1 = g.W0 * g.S1, H1 = g.H0 * g.S1;
+      Object.assign(tower.style, { width: `${W1}px`, height: `${H1}px`, left: `${(vw - W1) / 2}px`, top: `${g.top0}px` });
       // The letters are filled with the tower exactly where it stands when it starts to melt,
       // so the facade inside them lines up with the one fading out around them.
-      const W1 = g.W0 * g.S1, H1 = g.H0 * g.S1;
       fill.style.backgroundSize = `${W1}px ${H1}px`;
       fill.style.backgroundPosition = `${(vw - W1) / 2}px ${g.top0 + g.ty1}px`;
     };
@@ -111,7 +104,7 @@ export default function Hero() {
       cta.style.visibility = ctaOut >= 1 ? "hidden" : "visible";
       // 2. The tower rises and grows (zoom eased exponentially, so it reads as one camera move).
       const e = inOut(seg(p, RISE[0], RISE[1]));
-      tower.style.transform = `translate3d(0, ${g.ty1 * e}px, 0) scale(${Math.pow(g.S1, e)})`;
+      tower.style.transform = `translate3d(0, ${g.ty1 * e}px, 0) scale(${Math.pow(g.S1, e - 1)})`; // 1/S1 -> 1
       sky.style.transform = `translate3d(0, ${-e * 3}%, 0) scale(${1 + e * 0.08})`;
       // 3. Outline lettering traces in over the tower, then gives way to the filled letters.
       const oIn = smooth(seg(p, OUTLINE[0], OUTLINE[1]));
@@ -141,6 +134,7 @@ export default function Hero() {
       scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: true, onRefresh: () => { measure(); render(state.p); } },
     });
     document.fonts?.ready.then(() => { measure(); ScrollTrigger.refresh(); });
+    return () => towerImg.removeEventListener("load", useFacade);
   }, { scope: root });
 
   const brand = (
@@ -153,26 +147,37 @@ export default function Hero() {
   return (
     <section className="hero" aria-label="Introduction" ref={root}>
       <div className="hero__stage">
-        <div className="hero__sky"><div className="hero__sky-in" /></div>
+        <div className="hero__sky">
+          <div className="hero__sky-in">
+            <Image src="/assets/hero/sky.jpg" alt="" fill sizes="100vw" loading="eager" fetchPriority="high" />
+          </div>
+        </div>
         <div className="hero__copy">
           <div className="hero__copy-in">
             <p className="hero__eyebrow">Gulberg Main Boulevard · Lahore</p>
             <h1 className="hero__title" aria-label={TITLE}>
               {TITLE.split(" ").map((w, i) => (
-                <span className="wd" key={i} aria-hidden="true"><span>{w}</span></span>
+                <span className="wd" key={i} aria-hidden="true" style={{ ["--i" as string]: i }}><span>{w}</span></span>
               ))}
             </h1>
             <p className="hero__sub">Prime address. <b>High demand.</b> Strong value.</p>
           </div>
         </div>
         <div className="hero__tower">
-          {/* eslint-disable-next-line @next/next/no-img-element -- a plain <img> keeps the cut-out a single GPU layer */}
-          <img className="hero__tower-in" src={TOWER} alt="" fetchPriority="high" decoding="async" />
+          {/* sizes = its width once grown behind the lettering (~1.1x the "SERENE" word), not its starting width */}
+          <Image className="hero__tower-in" src="/assets/hero/tower.webp" alt="" width={1072} height={2660} sizes="(max-width: 760px) 110vw, 75vw" quality={90} loading="eager" fetchPriority="high" />
         </div>
         <div className="hero__outline" aria-hidden="true">{brand}</div>
-        <div className="hero__fill" aria-hidden="true" style={{ backgroundImage: `url(${TOWER})` }}>{brand}</div>
+        <div className="hero__fill" aria-hidden="true">{brand}</div>
         <div className="clouds" aria-hidden="true">
-          {CLOUD_LAYERS.map((d) => <div className={`fog fog--${d}`} key={d}><span /></div>)}
+          {/* The back bank fills most of the screen (often the LCP), so it loads eagerly; the other two are lazy:
+              in view, so they still load at once, but after the sky and tower. Cover-cropped, so on portrait
+              screens their width follows the height (~170vh). */}
+          {CLOUD_LAYERS.map((d) => (
+            <div className={`fog fog--${d}`} key={d}>
+              <span><Image src={`/assets/hero/cloud-${d}.webp`} alt="" fill sizes="(orientation: portrait) 170vh, 140vw" loading={d === "back" ? "eager" : "lazy"} /></span>
+            </div>
+          ))}
         </div>
         <div className="hero__cta"><Btn href="/project">Explore the Project</Btn></div>
       </div>

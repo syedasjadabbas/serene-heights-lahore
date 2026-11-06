@@ -27,7 +27,7 @@ export default function PageHero({ eyebrow, title, lead, img, alt = "", id }: Pr
         {img && (
           <div className="page-hero__img reveal-img" style={{ ["--d" as string]: ".45s" }}>
             <div className="parallax" data-speed=".4">
-              <Image src={img} alt={alt} width={2200} height={1396} sizes="100vw" priority />
+              <Image src={img} alt={alt} width={2200} height={1396} sizes="100vw" loading="eager" fetchPriority="high" />
             </div>
           </div>
         )}

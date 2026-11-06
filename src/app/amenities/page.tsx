@@ -54,7 +54,7 @@ export default function AmenitiesPage() {
         <div className="wrap">
           <Reveal className="arrows__title" text="A statement of credibility." start={0.95} end={0.6} />
           <div className="arrows__row" aria-hidden="true">
-            {chevrons.map((src) => <div key={src} className="chev" style={{ backgroundImage: `url(${src})` }} />)}
+            {chevrons.map((src) => <div key={src} className="chev"><Image src={src} alt="" fill sizes="(max-width: 760px) 26vw, 255px" /></div>)}
           </div>
           <Reveal as="p" mode="words" className="arrows__text" start={0.95} end={0.65} text="Purposefully crafted to appeal to corporates, investors and high-end occupiers, the architecture is not just aesthetic — it is a statement of permanence and forward-thinking design." />
         </div>

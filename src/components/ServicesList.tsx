@@ -48,8 +48,9 @@ export default function ServicesList() {
         ))}
       </div>
       <div className="svc__peek" ref={peek} aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element -- tiny, preloaded, toggled on hover */}
-        {rows.map((r) => <img key={r.img} src={r.img} alt="" decoding="async" />)}
+        {/* lazy: the preview is display: none on phones (≤760px), so they never download these */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- tiny, toggled on hover */}
+        {rows.map((r) => <img key={r.img} src={r.img} alt="" loading="lazy" decoding="async" />)}
       </div>
     </>
   );

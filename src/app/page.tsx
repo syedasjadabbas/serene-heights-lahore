@@ -95,7 +95,7 @@ export default function Home() {
         <div className="wrap">
           <Reveal className="arrows__title" text="This isn't just about real estate." start={0.95} end={0.6} />
           <div className="arrows__row" aria-hidden="true">
-            {chevrons.map((src) => <div key={src} className="chev" style={{ backgroundImage: `url(${src})` }} />)}
+            {chevrons.map((src) => <div key={src} className="chev"><Image src={src} alt="" fill sizes="(max-width: 760px) 26vw, 255px" /></div>)}
           </div>
           <Reveal as="p" mode="words" className="arrows__text" start={0.95} end={0.65} text="It's about visibility. Access. Lasting value. You're not just looking for a unit. You're looking for a landmark. That's what we built on Main Boulevard." />
         </div>
@@ -224,7 +224,7 @@ export default function Home() {
           <div className="dir__cols" data-stagger>
             {directory.map((col) => (
               <div key={col.title}>
-                <h4>{col.title}</h4>
+                <h3>{col.title}</h3>
                 {col.links.map(([href, label]) => <Link key={label} href={href}>{label}</Link>)}
               </div>
             ))}

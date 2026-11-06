@@ -28,19 +28,30 @@ const devs = [
 export default function DevSlider() {
   const [i, setI] = useState(0);
   const [tick, setTick] = useState(0);
+  const [paused, setPaused] = useState(false);
 
+  // Auto-advance, held while the visitor points at or tabs into the slider so they can finish reading
+  // (WCAG 2.2.2); resuming restarts the current slide's timer.
   useEffect(() => {
+    if (paused) return;
     const t = setInterval(() => setI((v) => (v + 1) % devs.length), 6500);
     return () => clearInterval(t);
-  }, [tick]);
+  }, [tick, paused]);
 
   const go = (n: number) => { setI(n); setTick((t) => t + 1); };
+  const hold = (on: boolean) => { setPaused(on); if (!on) setTick((t) => t + 1); };
 
   return (
     <section className="sec grey">
       <div className="wrap">
         <Reveal className="huge" text="Built by Names You Trust." />
-        <div className="devs__grid">
+        <div
+          className="devs__grid"
+          onMouseEnter={() => hold(true)}
+          onMouseLeave={() => hold(false)}
+          onFocus={() => hold(true)}
+          onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) hold(false); }}
+        >
           <div className="reveal-img"><div className="devs__img">
             {devs.map((d, k) => (
               <Image key={d.img} src={d.img} alt={d.name} fill sizes="(max-width: 760px) 100vw, 58vw" className={k === i ? "on" : ""} />
@@ -55,7 +66,7 @@ export default function DevSlider() {
               </div>
               <span className="quote-mark">”</span>
             </div>
-            <div className="devs__progress"><span key={`${i}-${tick}`} /></div>
+            <div className={"devs__progress" + (paused ? " is-paused" : "")}><span key={`${i}-${tick}`} /></div>
             <div className="devs__q">
               {devs.map((d, k) => (
                 <div key={d.name} className={k === i ? "on" : ""}>

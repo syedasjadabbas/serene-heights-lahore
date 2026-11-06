@@ -51,7 +51,7 @@ export default function Header() {
               if (isHome) { e.preventDefault(); scrollToTop(); }
             }}
           >
-            <span>SERENE HEIGHTS<small>LAHORE</small></span>
+            <span>SERENE HEIGHTS <small>LAHORE</small></span>
           </Link>
           <nav className="nav" aria-label="Main">
             {nav.map((item) =>

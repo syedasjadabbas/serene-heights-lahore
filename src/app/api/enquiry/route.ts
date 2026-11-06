@@ -9,6 +9,8 @@ const clean = (v: unknown, max = 2000) => String(v ?? "").replace(/[\r\n]+/g, " 
 const MIN_FILL_MS = 2500;          // people take longer than this to fill a form in
 const LIMIT = 5, WINDOW_MS = 10 * 60_000; // at most 5 enquiries per visitor per 10 minutes
 const recent = new Map<string, number[]>(); // per server instance; enough to stop a burst
+const MAX_BODY_BYTES = 16_000;     // a filled-in form is ~1 KB; refuse anything far bigger before parsing
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function tooMany(ip: string) {
   const now = Date.now();
@@ -19,10 +21,30 @@ function tooMany(ip: string) {
   return hits.length > LIMIT;
 }
 
+/** Browsers always send Origin on a cross-site POST: refuse forms posted from other websites. */
+function fromOtherSite(req: Request) {
+  const origin = req.headers.get("origin");
+  if (!origin) return false;
+  try {
+    return new URL(origin).host !== req.headers.get("host");
+  } catch {
+    return true;
+  }
+}
+
 export async function POST(req: Request) {
+  if (fromOtherSite(req)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  if (Number(req.headers.get("content-length") ?? 0) > MAX_BODY_BYTES) {
+    return NextResponse.json({ error: "Request too large" }, { status: 413 });
+  }
   let body: Record<string, unknown>;
   try {
-    body = await req.json();
+    const raw = await req.text();
+    if (raw.length > MAX_BODY_BYTES) throw new Error("too large"); // Content-Length can be absent or wrong
+    body = JSON.parse(raw);
+    if (!body || typeof body !== "object") throw new Error("not an object");
   } catch {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
@@ -42,10 +64,14 @@ export async function POST(req: Request) {
   if (!/^[+\d][\d\s-]{6,}$/.test(phone)) {
     return NextResponse.json({ error: "Please enter a valid phone number" }, { status: 400 });
   }
+  const email = clean(body.email, 160);
+  if (email && !EMAIL.test(email)) {
+    return NextResponse.json({ error: "Please enter a valid email address" }, { status: 400 });
+  }
   const fields: [string, string][] = [
     ["Name", clean(body.name, 120)],
     ["Phone", phone],
-    ["Email", clean(body.email, 160)],
+    ["Email", email],
     ["Interest", clean(body.interest, 120)],
     ["Message", String(body.message ?? "").trim().slice(0, 4000)],
   ].filter(([, v]) => v) as [string, string][];
@@ -69,8 +95,11 @@ export async function POST(req: Request) {
       port,
       secure: port === 465,
       auth: { user: SMTP_USER, pass: SMTP_PASS },
+      // Fail within the request instead of hanging it if the mail server stalls.
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 15_000,
     });
-    const email = fields.find(([k]) => k === "Email")?.[1];
     await transporter.sendMail({
       from: `"Serene Heights Lahore Website" <${SMTP_USER}>`,
       to: ENQUIRY_TO || "info@sereneheightslahore.com",

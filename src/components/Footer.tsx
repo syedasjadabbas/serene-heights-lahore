@@ -23,11 +23,11 @@ export default function Footer() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "callback", ...Object.fromEntries(new FormData(form)) }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error);
       setMsg("Thank you — our team will call you shortly.");
       form.reset();
-    } catch {
-      setMsg(`Sorry, that didn't go through. Please call ${site.phones.commercial.numbers[0]}.`);
+    } catch (err) {
+      setMsg((err instanceof Error && err.message) || `Sorry, that didn't go through. Please call ${site.phones.commercial.numbers[0]}.`);
     } finally {
       setBusy(false);
     }
@@ -42,9 +42,9 @@ export default function Footer() {
           <div>
             <h3>Request a Callback</h3>
             <form className="sub-form" onSubmit={onSubmit}>
-              <input name="phone" type="tel" placeholder="Enter your phone number" aria-label="Phone number" required minLength={7} />
+              <input name="phone" type="tel" placeholder="Enter your phone number" aria-label="Phone number" autoComplete="tel" required minLength={7} />
               <Honeypot />
-              <button aria-label="Submit" disabled={busy}><Arrow /></button>
+              <button aria-label="Request a callback" disabled={busy}><Arrow /></button>
             </form>
             <div className="sub-ok" aria-live="polite">{msg}</div>
             <div className="footer__info">
