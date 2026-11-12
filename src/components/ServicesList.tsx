@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useRef, type MouseEvent } from "react";
 import { LongArrow } from "./icons";
+import { asset } from "@/lib/asset";
 
 const rows = [
-  { word: "Retail", href: "/project#commercial", img: "/assets/peek/retail.webp", text: "Lower Ground + 6 commercial floors with drive-through ramps and vehicle access to almost every level — solving Gulberg's biggest footfall problem." },
-  { word: "Offices", href: "/project#offices", img: "/assets/peek/offices.webp", text: "Seven office floors in Gulberg's central corridor — visibility, accessibility and influence for businesses that want to lead their market." },
-  { word: "Co-Work", href: "/project#coworking", img: "/assets/peek/cowork.webp", text: "Two floors of flexible, fully equipped workspaces with shared amenities, collaborative zones and private suites." },
-  { word: "Stay", href: "/project#hotel", img: "/assets/peek/stay.webp", text: "Fully furnished serviced apartments under a professional hospitality model — stay when you want, earn rental returns when you don't." },
+  { word: "Retail", href: "/project#commercial", img: asset("/assets/peek/retail.webp"), text: "Lower Ground + 6 commercial floors with drive-through ramps and vehicle access to almost every level — solving Gulberg's biggest footfall problem." },
+  { word: "Offices", href: "/project#offices", img: asset("/assets/peek/offices.webp"), text: "Seven office floors in Gulberg's central corridor — visibility, accessibility and influence for businesses that want to lead their market." },
+  { word: "Co-Work", href: "/project#coworking", img: asset("/assets/peek/cowork.webp"), text: "Two floors of flexible, fully equipped workspaces with shared amenities, collaborative zones and private suites." },
+  { word: "Stay", href: "/project#hotel", img: asset("/assets/peek/stay.webp"), text: "Fully furnished serviced apartments under a professional hospitality model — stay when you want, earn rental returns when you don't." },
 ];
 
 /**

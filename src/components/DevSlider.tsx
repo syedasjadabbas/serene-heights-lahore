@@ -3,24 +3,25 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Reveal from "./Reveal";
+import { asset } from "@/lib/asset";
 
 const devs = [
   {
     name: "Fatir Developers (Pvt) Ltd",
-    logo: { src: "/assets/home/pvt.png", w: 460, h: 431 },
-    img: "/assets/about/Image2.jpg",
+    logo: { src: asset("/assets/home/pvt.png"), w: 460, h: 431 },
+    img: asset("/assets/about/Image2.jpg"),
     quote: "A master planner and leading property developer and provider of premier lifestyles, FATIR's strengths lie in its comprehensive capabilities in marketing, post-sales, and construction management — delivering outstanding value to its clients.",
   },
   {
     name: "Falah Developers",
-    logo: { src: "/assets/home/falah.png", w: 376, h: 340 },
-    img: "/assets/about/Image4.jpg",
+    logo: { src: asset("/assets/home/falah.png"), w: 376, h: 340 },
+    img: asset("/assets/about/Image4.jpg"),
     quote: "At Falah Developers, we don't just build projects — we build trust, long-term relationships, and a legacy of integrity.",
   },
   {
     name: "DM Consortium",
-    logo: { src: "/assets/home/consortium.png", w: 466, h: 406 },
-    img: "/assets/about/Image6.jpg",
+    logo: { src: asset("/assets/home/consortium.png"), w: 466, h: 406 },
+    img: asset("/assets/about/Image6.jpg"),
     quote: "Prior to commencing vertical construction, DM Consortium achieved remarkable success with the completion of Serene Farms on Barki Road, Lahore — and Serene Heights Hotel & Resorts in Nathia Gali.",
   },
 ];

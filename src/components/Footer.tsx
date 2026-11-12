@@ -7,6 +7,7 @@ import { site, tel } from "@/lib/site";
 import { Arrow } from "./icons";
 import Honeypot from "./Honeypot";
 import { scrollToTop } from "./SmoothScroll";
+import { asset, BASE_PATH } from "@/lib/asset";
 
 export default function Footer() {
   const [msg, setMsg] = useState("");
@@ -18,7 +19,7 @@ export default function Footer() {
     setBusy(true);
     setMsg("");
     try {
-      const res = await fetch("/api/enquiry", {
+      const res = await fetch(`${BASE_PATH}/api/enquiry`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "callback", ...Object.fromEntries(new FormData(form)) }),
@@ -74,7 +75,7 @@ export default function Footer() {
             {"SERENE".split("").map((c, i) => <span key={i} style={{ ["--i" as string]: i }}>{c}</span>)}
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 22 }}>
-            <Image src="/assets/logo/serene-white-transp.png" alt="Serene Heights Lahore logo" width={1944} height={2147} sizes="130px" />
+            <Image src={asset("/assets/logo/serene-white-transp.png")} alt="Serene Heights Lahore logo" width={1944} height={2147} sizes="130px" />
             <button className="to-top" onClick={() => scrollToTop()}>Back to top <Arrow /></button>
           </div>
         </div>
@@ -83,7 +84,7 @@ export default function Footer() {
           <span>Co-Working / Hotel Apartments: {site.phones.hospitality.numbers.join(" · ")}</span>
           <span>A joint venture by Fatir Developers, Falah Developers &amp; DM Consortium</span>
           <span>© {new Date().getFullYear()} Serene Heights Lahore. All Rights Reserved.</span>
-          <Image className="lda" src="/assets/home/lda-approved.png" alt="LDA Approved" width={417} height={417} sizes="44px" />
+          <Image className="lda" src={asset("/assets/home/lda-approved.png")} alt="LDA Approved" width={417} height={417} sizes="44px" />
         </div>
       </div>
     </footer>

@@ -23,7 +23,14 @@ const SECURITY_HEADERS = [
   { key: "Content-Security-Policy", value: "frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" },
 ];
 
+// The site lives at /serene-heights-lahore inside the Serene Heights Group site (Next.js Multi-Zones: the
+// group site forwards that path here), so it is built with that base path. NEXT_PUBLIC_BASE_PATH="" builds
+// it for a domain root instead. Image paths, fetch() and absolute URLs add it via src/lib/asset.ts.
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "/serene-heights-lahore";
+
 const nextConfig: NextConfig = {
+  basePath: BASE_PATH,
+  env: { NEXT_PUBLIC_BASE_PATH: BASE_PATH },
   poweredByHeader: false,
   // 90 is for the hero tower, which ends up filling the screen; everything else uses the default 75.
   images: { formats: ["image/avif", "image/webp"], qualities: [75, 90] },
@@ -36,14 +43,17 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
+    // Old addresses sit at the domain root, outside the base path (basePath: false).
+    const page = (to: string) => (to === "/" ? BASE_PATH || "/" : `${BASE_PATH}${to}`);
     return [
+      ...(BASE_PATH ? [{ source: "/", destination: BASE_PATH, basePath: false as const, permanent: false }] : []),
       ...OLD_PAGES.flatMap(([from, to]) => [
-        { source: from, destination: to, permanent: true },
-        { source: `${from}/`, destination: to, permanent: true },
-        { source: `${from}.html`, destination: to, permanent: true },
+        { source: from, destination: page(to), basePath: false as const, permanent: true },
+        { source: `${from}/`, destination: page(to), basePath: false as const, permanent: true },
+        { source: `${from}.html`, destination: page(to), basePath: false as const, permanent: true },
       ]),
       // Anything else under the old /lahore path (old images, unknown pages) goes to the home page.
-      { source: "/lahore/:path*", destination: "/", permanent: true },
+      { source: "/lahore/:path*", destination: page("/"), basePath: false as const, permanent: true },
     ];
   },
 };

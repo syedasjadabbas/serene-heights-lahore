@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Arrow } from "./icons";
 import Honeypot from "./Honeypot";
 import { interests, type InterestKey } from "@/lib/site";
+import { BASE_PATH } from "@/lib/asset";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
@@ -21,7 +22,7 @@ export default function ContactForm() {
     const form = e.currentTarget;
     setStatus("sending");
     try {
-      const res = await fetch("/api/enquiry", {
+      const res = await fetch(`${BASE_PATH}/api/enquiry`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type: "enquiry", ...Object.fromEntries(new FormData(form)) }),

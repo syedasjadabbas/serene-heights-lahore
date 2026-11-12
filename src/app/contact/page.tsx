@@ -2,13 +2,14 @@ import PageHero from "@/components/PageHero";
 import ContactForm from "@/components/ContactForm";
 import Outro from "@/components/Outro";
 import { pageMeta, site, tel } from "@/lib/site";
+import { asset } from "@/lib/asset";
 
 export const metadata = pageMeta({
   title: "Contact",
   description:
     "Contact Serene Heights Lahore — Gulberg Main Boulevard, Lahore. Corporate office / commercial: 0304-1111106. Co-working / hotel apartments: 0321-4979446, 0300-8497999.",
   path: "/contact",
-  image: "/assets/contact/contact-1.jpg",
+  image: asset("/assets/contact/contact-1.jpg"),
 });
 
 export default function ContactPage() {
@@ -48,7 +49,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <Outro img="/assets/contact/contact-1.jpg" title="A Landmark Address." ghost="Waiting for You." cta="Call Now" href={tel(site.phones.commercial.numbers[0])} />
+      <Outro img={asset("/assets/contact/contact-1.jpg")} title="A Landmark Address." ghost="Waiting for You." cta="Call Now" href={tel(site.phones.commercial.numbers[0])} />
     </>
   );
 }

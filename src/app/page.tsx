@@ -9,12 +9,13 @@ import Outro from "@/components/Outro";
 import { enquire, pageMeta, SITE_URL, site } from "@/lib/site";
 import StatsBand from "@/components/StatsBand";
 import { Arrow } from "@/components/icons";
+import { asset, BASE_PATH } from "@/lib/asset";
 
 export const metadata = pageMeta({
   description:
     "Serene Heights Lahore — a landmark 21-storey mixed-use commercial development on Gulberg Main Boulevard: commercial floors, offices, co-working and hotel apartments.",
   path: "/",
-  image: "/assets/amenities/amenities-1-new.jpg",
+  image: asset("/assets/amenities/amenities-1-new.jpg"),
 });
 
 // Structured data, so search engines know the project, its address, phones and developers.
@@ -26,8 +27,8 @@ const jsonLd = {
       "@type": "Organization",
       "@id": `${SITE_URL}/#org`,
       name: site.name,
-      url: SITE_URL,
-      logo: `${SITE_URL}/assets/logo/serene-blue-transp.png`,
+      url: `${SITE_URL}${BASE_PATH}`,
+      logo: `${SITE_URL}${BASE_PATH}/assets/logo/serene-blue-transp.png`,
       email: site.email,
       contactPoint: [
         ...site.phones.commercial.numbers.map((n) => ({ "@type": "ContactPoint", telephone: intl(n), contactType: "sales", areaServed: "PK", description: site.phones.commercial.label })),
@@ -39,8 +40,8 @@ const jsonLd = {
       "@id": `${SITE_URL}/#building`,
       name: site.name,
       description: site.tagline,
-      url: SITE_URL,
-      image: `${SITE_URL}/assets/amenities/amenities-1-new.jpg`,
+      url: `${SITE_URL}${BASE_PATH}`,
+      image: `${SITE_URL}${BASE_PATH}/assets/amenities/amenities-1-new.jpg`,
       address: { "@type": "PostalAddress", streetAddress: "Gulberg Main Boulevard", addressLocality: "Lahore", addressRegion: "Punjab", addressCountry: "PK" },
       telephone: intl(site.phones.commercial.numbers[0]),
     },
@@ -48,10 +49,10 @@ const jsonLd = {
 };
 
 const chevrons = [
-  "/assets/chev/p9.webp",
-  "/assets/chev/p10.webp",
-  "/assets/chev/p5.webp",
-  "/assets/chev/brand.webp",
+  asset("/assets/chev/p9.webp"),
+  asset("/assets/chev/p10.webp"),
+  asset("/assets/chev/p5.webp"),
+  asset("/assets/chev/brand.webp"),
 ];
 
 const steps = [
@@ -61,15 +62,15 @@ const steps = [
 ];
 
 const cards = [
-  { href: "/project#configuration", img: "/assets/project/image-1-new.jpg", title: "Building Configuration", text: "21 storeys: retail, parking, offices, co-working & hotel apartments." },
-  { href: "/amenities#services", img: "/assets/amenities/amenities-1-new.jpg", title: "Amenities & Services", text: "Security, high-speed elevators, EV charging, gym, rooftop helipad." },
-  { href: "/amenities#architecture", img: "/assets/amenities/amenities-2-new.jpg", title: "Modern Architecture", text: "Clean geometry, vertical elements and expansive glass." },
+  { href: "/project#configuration", img: asset("/assets/project/image-1-new.jpg"), title: "Building Configuration", text: "21 storeys: retail, parking, offices, co-working & hotel apartments." },
+  { href: "/amenities#services", img: asset("/assets/amenities/amenities-1-new.jpg"), title: "Amenities & Services", text: "Security, high-speed elevators, EV charging, gym, rooftop helipad." },
+  { href: "/amenities#architecture", img: asset("/assets/amenities/amenities-2-new.jpg"), title: "Modern Architecture", text: "Clean geometry, vertical elements and expansive glass." },
 ];
 
 const posts = [
-  { href: "/invest#rental", img: "/assets/home/building-7-new.jpg", tag: "Rental Demand", title: "High Rental Demand Next to the CBD", text: "Consistent demand from corporates, professionals and hospitality users — with limited premium supply nearby." },
-  { href: "/invest#smart", img: "/assets/home/building-8-new.jpg", tag: "Smart Property", title: "Own a Share from PKR 2 Million", text: "Smart property units let you become a part-owner of a prime commercial asset with lower capital exposure." },
-  { href: "/invest#delivery", img: "/assets/project/Image2.jpg", tag: "Delivery", title: "A Clear 2-Year Delivery Timeline", text: "Structured milestones and progress transparency keep the project aligned with planned returns." },
+  { href: "/invest#rental", img: asset("/assets/home/building-7-new.jpg"), tag: "Rental Demand", title: "High Rental Demand Next to the CBD", text: "Consistent demand from corporates, professionals and hospitality users — with limited premium supply nearby." },
+  { href: "/invest#smart", img: asset("/assets/home/building-8-new.jpg"), tag: "Smart Property", title: "Own a Share from PKR 2 Million", text: "Smart property units let you become a part-owner of a prime commercial asset with lower capital exposure." },
+  { href: "/invest#delivery", img: asset("/assets/project/Image2.jpg"), tag: "Delivery", title: "A Clear 2-Year Delivery Timeline", text: "Structured milestones and progress transparency keep the project aligned with planned returns." },
 ];
 
 const directory = [
@@ -133,11 +134,11 @@ export default function Home() {
           </div>
           <div className="inv">
             <div className="inv__small reveal-img parallax" data-speed=".5">
-              <Image src="/assets/project/Image7.jpg" alt="Serene Heights entrance at dusk" fill sizes="25vw" />
+              <Image src={asset("/assets/project/Image7.jpg")} alt="Serene Heights entrance at dusk" fill sizes="25vw" />
             </div>
             <div>
               <div className="inv__big reveal-img" style={{ ["--d" as string]: ".15s" }}>
-                <Image src="/assets/home/building-6-new.jpg" alt="Aerial view of Serene Heights Lahore in Gulberg" fill sizes="(max-width: 760px) 100vw, 66vw" />
+                <Image src={asset("/assets/home/building-6-new.jpg")} alt="Aerial view of Serene Heights Lahore in Gulberg" fill sizes="(max-width: 760px) 100vw, 66vw" />
               </div>
               <div data-stagger>
                 <p className="inv__text">
@@ -213,7 +214,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Outro img="/assets/project/Image12.jpg" title="Own the Address." ghost="We'll Help You Get There." cta="Let's Get Started" href="/contact" />
+      <Outro img={asset("/assets/project/Image12.jpg")} title="Own the Address." ghost="We'll Help You Get There." cta="Let's Get Started" href="/contact" />
 
       <section className="dir">
         <div className="wrap">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BASE_PATH } from "@/lib/asset";
 
 /**
  * Live address of the site (used for link previews, the sitemap and canonical URLs).
@@ -65,11 +66,13 @@ export const nav = [
 /** Page metadata: title, description, canonical address and the link preview (WhatsApp, Facebook, X…). */
 export function pageMeta({ title, description, path, image }: { title?: string; description: string; path: string; image: string }): Metadata {
   const full = title ? `${title} | ${site.name}` : `${site.name} | 21-Storey Commercial Landmark on Gulberg Main Boulevard`;
+  // the page's address including the base path ("/about" -> "/serene-heights-lahore/about")
+  const url = path === "/" ? `${BASE_PATH}/` : `${BASE_PATH}${path}`;
   return {
     ...(title ? { title } : {}),
     description,
-    alternates: { canonical: path },
-    openGraph: { title: full, description, url: path, siteName: site.name, images: [{ url: image, alt: full }], type: "website", locale: "en_PK" },
+    alternates: { canonical: url },
+    openGraph: { title: full, description, url, siteName: site.name, images: [{ url: image, alt: full }], type: "website", locale: "en_PK" },
     twitter: { card: "summary_large_image", title: full, description, images: [image] },
   };
 }

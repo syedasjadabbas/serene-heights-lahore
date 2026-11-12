@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
+import { BASE_PATH } from "@/lib/asset";
 
 const pages: [path: string, priority: number][] = [
   ["/", 1],
@@ -12,7 +13,7 @@ const pages: [path: string, priority: number][] = [
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return pages.map(([path, priority]) => ({
-    url: `${SITE_URL}${path === "/" ? "" : path}`,
+    url: `${SITE_URL}${BASE_PATH}${path === "/" ? "" : path}`,
     lastModified: new Date(),
     changeFrequency: "monthly",
     priority,

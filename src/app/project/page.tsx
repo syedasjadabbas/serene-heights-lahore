@@ -4,13 +4,14 @@ import Reveal from "@/components/Reveal";
 import Btn from "@/components/Btn";
 import Outro from "@/components/Outro";
 import { enquire, pageMeta } from "@/lib/site";
+import { asset } from "@/lib/asset";
 
 export const metadata = pageMeta({
   title: "The Project",
   description:
     "Project overview and building configuration of Serene Heights Lahore: Lower Ground + 6 commercial floors, 5 parking floors, 7 office floors, 2 co-working floors and 2 hotel apartment floors.",
   path: "/project",
-  image: "/assets/project/image-1-new.jpg",
+  image: asset("/assets/project/image-1-new.jpg"),
 });
 
 const stats = [
@@ -23,7 +24,7 @@ const stats = [
 
 const floors = [
   {
-    id: "commercial", tag: "Lower Ground + 6", title: "Commercial", img: "/assets/project/Image3_v2.jpg", cta: "Enquire About Retail", for: "retail" as const,
+    id: "commercial", tag: "Lower Ground + 6", title: "Commercial", img: asset("/assets/project/Image3_v2.jpg"), cta: "Enquire About Retail", for: "retail" as const,
     body: [
       "One of Gulberg's most persistent commercial challenges has always been parking accessibility — a factor that directly impacts footfall, tenant demand and property value. This project redefines that experience.",
       "Designed with multiple parking levels and drive-through ramps, the building allows vehicular access to almost all floors, significantly reducing congestion and eliminating the inconvenience typically associated with high-density commercial areas.",
@@ -31,21 +32,21 @@ const floors = [
     ],
   },
   {
-    id: "offices", tag: "×7 Office Floors", title: "Office", img: "/assets/project/Image6_1.jpg", plan: { src: "/assets/project/Image6_2.png", w: 260, h: 638 }, cta: "Enquire About Offices", for: "offices" as const,
+    id: "offices", tag: "×7 Office Floors", title: "Office", img: asset("/assets/project/Image6_1.jpg"), plan: { src: asset("/assets/project/Image6_2.png"), w: 260, h: 638 }, cta: "Enquire About Offices", for: "offices" as const,
     body: [
       "Located at the heart of Lahore's most active commercial district, the office floors offer businesses an address that delivers visibility, accessibility and influence. Operating from Gulberg's central corridor places your business within immediate reach of key clients, partners and decision-makers.",
       "This strategic positioning enhances brand presence, improves operational efficiency and provides a competitive edge — allowing businesses not just to operate, but to lead and dominate in their market.",
     ],
   },
   {
-    id: "coworking", tag: "×2 Co-Working Floors", title: "Co-Working", img: "/assets/project/Image8_1.jpg", plan: { src: "/assets/project/Image8_2.png", w: 244, h: 633 }, cta: "Enquire About Co-Working", for: "coworking" as const,
+    id: "coworking", tag: "×2 Co-Working Floors", title: "Co-Working", img: asset("/assets/project/Image8_1.jpg"), plan: { src: asset("/assets/project/Image8_2.png"), w: 244, h: 633 }, cta: "Enquire About Co-Working", for: "coworking" as const,
     body: [
       "Designed for modern professionals and growing businesses, the co-working floors offer flexible, fully equipped workspaces in the heart of Gulberg. Shared amenities, collaborative zones and private suites create an environment that supports productivity, networking and scalability.",
       "Whether for startups, freelancers or established teams seeking a premium address without long-term commitment, these floors deliver convenience, community and commercial value in one smart workplace solution.",
     ],
   },
   {
-    id: "hotel", tag: "×2 Apartment Floors", title: "Hotel", word: "Apartments", img: "/assets/project/Image9.jpg", cta: "Enquire About Apartments", for: "hotel" as const,
+    id: "hotel", tag: "×2 Apartment Floors", title: "Hotel", word: "Apartments", img: asset("/assets/project/Image9.jpg"), cta: "Enquire About Apartments", for: "hotel" as const,
     body: [
       "Designed as a true home away from home, these fully furnished serviced apartments combine comfort with income potential. Operated under a professional hospitality model, they allow owners to enjoy personal stays while generating rental returns during high-demand periods.",
       "A seamless blend of lifestyle convenience and investment performance — offering both use and ROI from a single smart asset.",
@@ -60,7 +61,7 @@ export default function ProjectPage() {
         eyebrow="The Project"
         title={"Where Vision Meets\nVertical Excellence."}
         lead="The project offers investors an address with exceptional visibility, seamless connectivity and sustained demand — ideal for corporate offices, professional firms and commercial occupiers."
-        img="/assets/project/image-1-new.jpg"
+        img={asset("/assets/project/image-1-new.jpg")}
         alt="Serene Heights Lahore facade on Gulberg Main Boulevard"
       />
 
@@ -84,7 +85,7 @@ export default function ProjectPage() {
             {stats.map(([n, l]) => <div className="stat" key={l}><b>{n}</b><span>{l}</span></div>)}
           </div>
           <div className="reveal-img" style={{ marginTop: 60 }}>
-            <Image src="/assets/project/Image2.jpg" alt="Exploded view of the building's floor configuration" width={1512} height={851} sizes="100vw" style={{ width: "100%", height: "auto", background: "#fff" }} />
+            <Image src={asset("/assets/project/Image2.jpg")} alt="Exploded view of the building's floor configuration" width={1512} height={851} sizes="100vw" style={{ width: "100%", height: "auto", background: "#fff" }} />
           </div>
         </div>
       </section>
@@ -122,7 +123,7 @@ export default function ProjectPage() {
             </div>
           </div>
           <div className="reveal-img" style={{ marginTop: 60 }}>
-            <Image src="/assets/project/Image10.jpg" alt="Drive-through ramp and parking levels at Serene Heights Lahore" width={2200} height={1396} sizes="100vw" style={{ width: "100%", height: "auto" }} />
+            <Image src={asset("/assets/project/Image10.jpg")} alt="Drive-through ramp and parking levels at Serene Heights Lahore" width={2200} height={1396} sizes="100vw" style={{ width: "100%", height: "auto" }} />
           </div>
         </div>
       </section>
@@ -137,12 +138,12 @@ export default function ProjectPage() {
             </div>
           </div>
           <div className="reveal-img" style={{ marginTop: 60 }}>
-            <Image src="/assets/home/building-3.jpg" alt="Location map: Model Town, Kalma Underpass, CBD and Main Boulevard" width={1432} height={867} sizes="100vw" style={{ width: "100%", height: "auto" }} />
+            <Image src={asset("/assets/home/building-3.jpg")} alt="Location map: Model Town, Kalma Underpass, CBD and Main Boulevard" width={1432} height={867} sizes="100vw" style={{ width: "100%", height: "auto" }} />
           </div>
         </div>
       </section>
 
-      <Outro img="/assets/project/Image4.jpg" title="Find Your Floor." ghost="We'll Walk You Through It." cta="Book a Site Visit" href={enquire("visit")} />
+      <Outro img={asset("/assets/project/Image4.jpg")} title="Find Your Floor." ghost="We'll Walk You Through It." cta="Book a Site Visit" href={enquire("visit")} />
     </>
   );
 }

@@ -3,20 +3,21 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import Outro from "@/components/Outro";
 import { enquire, pageMeta } from "@/lib/site";
+import { asset } from "@/lib/asset";
 
 export const metadata = pageMeta({
   title: "Design & Amenities",
   description:
     "Architecture, services and amenities at Serene Heights Lahore: 24/7 security, high-speed elevators, 5 parking floors, EV charging, gym, rooftop helipad and in-house management.",
   path: "/amenities",
-  image: "/assets/amenities/amenities-2-new.jpg",
+  image: asset("/assets/amenities/amenities-2-new.jpg"),
 });
 
 const chevrons = [
-  "/assets/chev/am1.webp",
-  "/assets/chev/brand.webp",
-  "/assets/chev/p11.webp",
-  "/assets/chev/b8.webp",
+  asset("/assets/chev/am1.webp"),
+  asset("/assets/chev/brand.webp"),
+  asset("/assets/chev/p11.webp"),
+  asset("/assets/chev/b8.webp"),
 ];
 
 const groups = [
@@ -36,7 +37,7 @@ export default function AmenitiesPage() {
         eyebrow="Architecture"
         title={"Modern by Design.\nIconic by Presence."}
         lead="The architectural expression of the building reflects contemporary design, clean geometry and corporate sophistication. A sleek modern façade, defined by vertical elements and expansive glass panels, creates a commanding presence while maintaining visual elegance."
-        img="/assets/amenities/amenities-2-new.jpg"
+        img={asset("/assets/amenities/amenities-2-new.jpg")}
         alt="Serene Heights Lahore façade detail"
       />
 
@@ -72,7 +73,7 @@ export default function AmenitiesPage() {
           <div className="amen" data-stagger>
             {groups.map((g) => (
               <div className="amen__item" key={g.title}>
-                <Image src={`/assets/amenities/${g.icon}.png`} alt="" width={48} height={48} />
+                <Image src={asset(`/assets/amenities/${g.icon}.png`)} alt="" width={48} height={48} />
                 <h3>{g.title}</h3>
                 <ul>{g.items.map((i) => <li key={i}>{i}</li>)}</ul>
               </div>
@@ -85,7 +86,7 @@ export default function AmenitiesPage() {
         </div>
       </section>
 
-      <Outro img="/assets/amenities/amenities-1-new.jpg" title="See It for Yourself." ghost="Visit Gulberg Main Boulevard." cta="Book a Visit" href={enquire("visit")} />
+      <Outro img={asset("/assets/amenities/amenities-1-new.jpg")} title="See It for Yourself." ghost="Visit Gulberg Main Boulevard." cta="Book a Visit" href={enquire("visit")} />
     </>
   );
 }

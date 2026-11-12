@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import Image from "next/image";
 import Btn from "./Btn";
+import { asset } from "@/lib/asset";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -149,7 +150,7 @@ export default function Hero() {
       <div className="hero__stage">
         <div className="hero__sky">
           <div className="hero__sky-in">
-            <Image src="/assets/hero/sky.jpg" alt="" fill sizes="100vw" loading="eager" fetchPriority="high" />
+            <Image src={asset("/assets/hero/sky.jpg")} alt="" fill sizes="100vw" loading="eager" fetchPriority="high" />
           </div>
         </div>
         <div className="hero__copy">
@@ -165,7 +166,7 @@ export default function Hero() {
         </div>
         <div className="hero__tower">
           {/* sizes = its width once grown behind the lettering (~1.1x the "SERENE" word), not its starting width */}
-          <Image className="hero__tower-in" src="/assets/hero/tower.webp" alt="" width={1072} height={2660} sizes="(max-width: 760px) 110vw, 75vw" quality={90} loading="eager" fetchPriority="high" />
+          <Image className="hero__tower-in" src={asset("/assets/hero/tower.webp")} alt="" width={1072} height={2660} sizes="(max-width: 760px) 110vw, 75vw" quality={90} loading="eager" fetchPriority="high" />
         </div>
         <div className="hero__outline" aria-hidden="true">{brand}</div>
         <div className="hero__fill" aria-hidden="true">{brand}</div>
@@ -175,7 +176,7 @@ export default function Hero() {
               screens their width follows the height (~170vh). */}
           {CLOUD_LAYERS.map((d) => (
             <div className={`fog fog--${d}`} key={d}>
-              <span><Image src={`/assets/hero/cloud-${d}.webp`} alt="" fill sizes="(orientation: portrait) 170vh, 140vw" loading={d === "back" ? "eager" : "lazy"} /></span>
+              <span><Image src={asset(`/assets/hero/cloud-${d}.webp`)} alt="" fill sizes="(orientation: portrait) 170vh, 140vw" loading={d === "back" ? "eager" : "lazy"} /></span>
             </div>
           ))}
         </div>

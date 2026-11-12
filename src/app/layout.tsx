@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import ScrollFx from "@/components/ScrollFx";
 import SmoothScroll from "@/components/SmoothScroll";
 import { SITE_URL } from "@/lib/site";
+import { asset } from "@/lib/asset";
 import "./globals.css";
 
 const sans = Instrument_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Serene Heights Lahore",
     description: "A landmark 21-storey mixed-use commercial development on Gulberg Main Boulevard, Lahore.",
-    images: ["/assets/amenities/amenities-1-new.jpg"],
+    images: [asset("/assets/amenities/amenities-1-new.jpg")],
     siteName: "Serene Heights Lahore",
     type: "website",
     locale: "en_PK",

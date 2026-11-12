@@ -3,29 +3,30 @@ import PageHero from "@/components/PageHero";
 import { pageMeta } from "@/lib/site";
 import Reveal from "@/components/Reveal";
 import Outro from "@/components/Outro";
+import { asset } from "@/lib/asset";
 
 export const metadata = pageMeta({
   title: "About",
   description:
     "Serene Heights Lahore is a joint venture by Fatir Developers, Falah Developers and DM Consortium.",
   path: "/about",
-  image: "/assets/home/building-brand.jpg",
+  image: asset("/assets/home/building-brand.jpg"),
 });
 
 const partners = [
   {
-    name: "Fatir Developers (Pvt) Ltd", logo: { src: "/assets/home/pvt.png", w: 460, h: 431 },
-    a: { src: "/assets/about/Image1.jpg", w: 756, h: 854 }, b: { src: "/assets/about/Image2.jpg", w: 1512, h: 855 },
+    name: "Fatir Developers (Pvt) Ltd", logo: { src: asset("/assets/home/pvt.png"), w: 460, h: 431 },
+    a: { src: asset("/assets/about/Image1.jpg"), w: 756, h: 854 }, b: { src: asset("/assets/about/Image2.jpg"), w: 1512, h: 855 },
     text: "By extending its expertise in master-planned real estate projects nationwide, FATIR has established a significant presence in real estate across the nation. A master planner and leading property developer and provider of premier lifestyles, FATIR's strengths lie in its comprehensive capabilities in marketing, post-sales and construction management, delivering outstanding and exceptional value to its clients.",
   },
   {
-    name: "Falah Developers", logo: { src: "/assets/home/falah.png", w: 376, h: 340 },
-    a: { src: "/assets/about/Image3.jpg", w: 701, h: 854 }, b: { src: "/assets/about/Image4.jpg", w: 1512, h: 855 },
+    name: "Falah Developers", logo: { src: asset("/assets/home/falah.png"), w: 376, h: 340 },
+    a: { src: asset("/assets/about/Image3.jpg"), w: 701, h: 854 }, b: { src: asset("/assets/about/Image4.jpg"), w: 1512, h: 855 },
     text: "At Falah Developers, we don't just build projects — we build trust, long-term relationships, and a legacy of integrity.",
   },
   {
-    name: "DM Consortium", logo: { src: "/assets/home/consortium.png", w: 466, h: 406 },
-    a: { src: "/assets/about/Image5.jpg", w: 701, h: 854 }, b: { src: "/assets/about/Image6.jpg", w: 1512, h: 855 },
+    name: "DM Consortium", logo: { src: asset("/assets/home/consortium.png"), w: 466, h: 406 },
+    a: { src: asset("/assets/about/Image5.jpg"), w: 701, h: 854 }, b: { src: asset("/assets/about/Image6.jpg"), w: 1512, h: 855 },
     text: "Prior to commencing vertical construction, DM Consortium achieved remarkable success with the completion of a horizontal development project named Serene Farms, situated on Barki Road in Lahore.",
   },
 ];
@@ -37,7 +38,7 @@ export default function AboutPage() {
         eyebrow="About"
         title={"A New Benchmark for\nCommercial Excellence."}
         lead="Serene Heights Lahore is envisioned as a future-ready commercial destination that reflects ambition, credibility and progress — one of its kind mixed-use development in the heart of Downtown Lahore."
-        img="/assets/home/building-brand.jpg"
+        img={asset("/assets/home/building-brand.jpg")}
         alt="Serene Heights Lahore entrance"
       />
 
@@ -71,7 +72,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <Outro img="/assets/project/Image12.jpg" title="Built on Trust." ghost="Rising on Main Boulevard." cta="Talk to Our Team" href="/contact" />
+      <Outro img={asset("/assets/project/Image12.jpg")} title="Built on Trust." ghost="Rising on Main Boulevard." cta="Talk to Our Team" href="/contact" />
     </>
   );
 }
